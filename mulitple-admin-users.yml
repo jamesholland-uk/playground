@@ -1,0 +1,45 @@
+---
+#
+# multiple-admin-users.yml - Create multiple PAN-os admin users
+#
+# Usage:  $ ansible-playbook -i inventory multiple-admin-users.yml -e @creds.yml
+#
+
+- hosts: '{{ target | default("awsrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+  tasks:
+
+    - name: Create admins
+      paloaltonetworks.panos.panos_administrator:
+        provider: '{{ device }}'
+        admin_username: '{{ item.user }}'
+        admin_password: '{{ item.pass }}'
+        superuser_read_only: true
+      with_items:
+        - { user: 'student01', pass: 'Ignite2020!' }
+        - { user: 'student02', pass: 'Ignite2020!' }
+        - { user: 'student03', pass: 'Ignite2020!' }
+        - { user: 'student04', pass: 'Ignite2020!' }
+        - { user: 'student05', pass: 'Ignite2020!' }
+        - { user: 'student06', pass: 'Ignite2020!' }
+        - { user: 'student07', pass: 'Ignite2020!' }
+        - { user: 'student08', pass: 'Ignite2020!' }
+        - { user: 'student09', pass: 'Ignite2020!' }
+        - { user: 'student10', pass: 'Ignite2020!' }
+        - { user: 'student11', pass: 'Ignite2020!' }
+        - { user: 'student12', pass: 'Ignite2020!' }
+        - { user: 'student13', pass: 'Ignite2020!' }
+        - { user: 'student14', pass: 'Ignite2020!' }
+        - { user: 'student15', pass: 'Ignite2020!' }
+
+    - name: Commit configuration
+      paloaltonetworks.panos.panos_commit_panorama:
+        provider: '{{ device }}'

@@ -1,0 +1,34 @@
+---
+#
+# Creates an API key for the user, and a VM Auth Key for use during bootstrapping
+#
+# Usage: $ ansible-playbook -i inventory op-cmd-keys.yml -e @creds.yml
+#
+
+- hosts: '{{ target | default("panorama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+  tasks:
+    - name: Generate API Key
+      paloaltonetworks.panos.panos_api_key:
+        provider: '{{ device }}'
+      register: auth
+
+    - debug:
+        msg: 'API key for {{ device.username}} is {{ auth.api_key }}'
+
+    - name: Generate VM Auth Key
+      paloaltonetworks.panos.panos_vm_auth_key:
+        provider: '{{ device }}'
+        hours: 8
+      register: res
+
+    - debug:
+        msg: 'Auth key {{ res.authkey }} expires at {{ res.expires }}'

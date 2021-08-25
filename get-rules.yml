@@ -1,0 +1,26 @@
+---
+
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Get rules
+      paloaltonetworks.panos.panos_security_rule_facts:
+        provider: '{{ device }}'
+        details: true
+      register: sec_rules
+
+    - debug:
+        msg: '{{ sec_rules }}'

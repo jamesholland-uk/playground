@@ -1,0 +1,86 @@
+---
+# aws_vpn.yml - Create VPN connection with AWS private VPC.
+#
+# Description
+# ===========
+#
+# Creates the VPN tunnel and BGP configuration to establish a VPN connection with an AWS private VPC.  This playbook
+# uses the 'ec2_vpc_vpn_info' module to pull the VPN configuration.
+#
+# This playbook requires connection details for the device to be specified in the variables 'ip_address', 'username',
+# and 'password'.  These may be defined as host variables (see `host_vars/firewall.yml` for an example) or
+# extra vars.
+#
+# This playbook requires the AWS VPN id to be specified in the 'vpn_id' variable.
+#
+#
+# Required Python modules
+# =======================
+#
+# boto3
+#
+# Modules Used
+# ============
+#
+# ec2_vpc_vpn_info - https://docs.ansible.com/ansible/latest/modules/ec2_vpc_vpn_info_module.html
+# panos_ike_crypto_profile - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ike_crypto_profile_module.html
+# panos_ike_gateway - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ike_gateway_module.html
+# panos_ipsec_profile - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ipsec_profile_module.html
+# panos_tunnel - https://ansible-pan.readthedocs.io/en/latest/modules/panos_tunnel_module.html
+# panos_ipsec_tunnel - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ipsec_tunnel_module.html
+# panos_bgp - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_module.html
+# panos_bgp_peer_group - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_peer_group_module.html
+# panos_bgp_peer - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_peer_module.html
+# panos_redistribution - https://ansible-pan.readthedocs.io/en/latest/modules/panos_redistribution_module.html
+# panos_bgp_redistribute - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_redistribute_module.html
+# panos_commit - https://ansible-pan.readthedocs.io/en/latest/modules/panos_commit_module.html
+#
+# Usage
+# =====
+#
+#   $ ansible-playbook -i inventory aws_vpn.yml -e vpn_id=vpn-08ef9ead262d7490f
+
+- hosts: '{{ target | default("panorama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+    template: 'test-tpl'
+    template_stack: 'test-tpl-stack'
+    untrust_interface: 'ethernet1/1'
+    trust_interface: 'ethernet1/2'
+    tunnel_if_1: 'tunnel.10'
+    tunnel_if_2: 'tunnel.11'
+    zone_name: 'vpn'
+    vr_name: 'default'
+    local_as: '65000'
+    router_id: '10.0.0.10'
+    peer_group: 'AmazonBGP'
+    redist_profile: 'Export_to_Amazon'
+    redist_priority: 2
+
+    # AWS VPN default settings
+    ike_settings:
+      dhgroup: 'group2'
+      authentication: 'sha1'
+      lifetime_sec: '28800'
+      encryption: 'aes-128-cbc'
+
+    ipsec_settings:
+      authentication: 'sha1'
+      encryption: 'aes-128-cbc'
+      dhgroup: 'group2'
+      lifetime_seconds: '28800'
+
+  tasks:
+    - name: Commit and Push template configuration
+      paloaltonetworks.panos.panos_commit_push:
+        provider: '{{ device }}'
+        style: 'template stack'
+        name: '{{ template_stack }}'
+        #force_template_values: true
