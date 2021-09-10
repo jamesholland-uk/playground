@@ -1,0 +1,6 @@
+repos:
+-   repo: https://github.com/bridgecrewio/checkov
+    rev: 2.0.330
+    hooks:
+    -   id: checkov
+        args: ['--baseline', '.checkov.baseline']
