@@ -1,0 +1,48 @@
+---
+#
+# Creates Device Groups and Templates/Stacks in Panorama
+#
+# Usage: $ ansible-playbook -i inventory create-rama-dg-tpl.yml -e @creds.yml
+#
+
+- hosts: '{{ target | default("panorama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+  tasks:
+
+    - name: Create template
+      paloaltonetworks.panos.panos_config_element:
+        provider: '{{ device }}'
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/template"
+        element: "<entry name='hello-template'/>"
+
+    - name: Create template stack
+      paloaltonetworks.panos.panos_config_element:
+        provider: '{{ device }}'
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/template-stack/entry[@name='hello-template-stack']/templates"
+        element: "<member>hello-template</member>"
+
+    - name: Create device group
+      paloaltonetworks.panos.panos_config_element:
+        provider: '{{ device }}'
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/device-group"
+        element: "<entry name='hello-device-group'/>"
+
+    - name: Add reference templates to device group
+      paloaltonetworks.panos.panos_config_element:
+        provider: '{{ device }}'
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='hello-device-group']/reference-templates"
+        element: "<member>hello-template-stack</member>"
+
+    - name: Move device group to parent device group
+      paloaltonetworks.panos.panos_op:
+        provider: '{{ device }}'
+        cmd: "<request><move-dg><entry name='hello-device-group'><new-parent-dg>poc-dg</new-parent-dg></entry></move-dg></request>"
+        cmd_is_xml: true

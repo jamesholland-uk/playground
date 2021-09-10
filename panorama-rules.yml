@@ -1,0 +1,36 @@
+- hosts: '{{ target | default("homelabrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+  tasks:
+    - name: Create first security rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ device }}'
+        device_group: "poc-dg"
+        rule_name: 'SSH Inbound'
+        source_zone: ['outside']
+        destination_zone: ['inside']
+        source_ip: ['any']
+        destination_ip: ['any']
+        application: ['ssh']
+        service: ['application-default']
+        action: 'allow'
+
+    - name: Create second security rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ device }}'
+        device_group: "poc-dg"
+        rule_name: 'SSH Outbound'
+        source_zone: ['inside']
+        destination_zone: ['outside']
+        source_ip: ['any']
+        destination_ip: ['any']
+        application: ['ssh']
+        service: ['application-default']
+        action: 'allow'

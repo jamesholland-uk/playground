@@ -22,7 +22,7 @@
         provider: '{{ device }}'
         admin_username: '{{ item.user }}'
         admin_password: '{{ item.pass }}'
-        superuser_read_only: true
+        superuser: true
       with_items:
         - { user: 'student01', pass: 'Ignite2020!' }
         - { user: 'student02', pass: 'Ignite2020!' }

@@ -1,0 +1,3 @@
+type=dhcp-client
+vm-series-auto-registration-pin-id=0f05be66-99df-4f1c-bc3b-4751ac72fad3
+vm-series-auto-registration-pin-value=c1ee6eb98cb04305a74f66a2fc8c758f
