@@ -25,3 +25,4 @@ credentials.json
 *init-cfg.txt*
 *cred*
 host_vars/*
+.terraform.lock.hcl

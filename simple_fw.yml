@@ -1,0 +1,57 @@
+---
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    mydevice:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: create DMZ zone
+      panos_zone:
+        provider: "{{ mydevice }}"
+        zone: "dmz"
+        mode: "layer3"
+
+    - name: ethernet1/1 in zone dmz
+      panos_interface:
+        provider: "{{ mydevice }}"
+        if_name: "ethernet1/9"
+        mode: "layer3"
+        ip: ["10.1.1.1/24"]
+        enable_dhcp: false
+        zone_name: "dmz"
+
+    - name: Create object 'Object-One'
+      panos_address_object:
+        provider: "{{ mydevice }}"
+        name: "Object-One"
+        value: "1.1.1.1"
+
+    - name: Create service object 'ssh-tcp-22'
+      panos_service_object:
+        provider: "{{ mydevice }}"
+        name: "ssh-tcp-22"
+        destination_port: "22"
+
+    - name: add SSH inbound rule
+      panos_security_rule:
+        provider: "{{ mydevice }}"
+        rule_name: "SSH permit"
+        source_zone: ["internet"]
+        source_ip: ["any"]
+        destination_zone: ["dmz"]
+        destination_ip: ["Object-One"]
+        application: ["ssh"]
+        service: ["ssh-tcp-22"]
+        action: "allow"
+
+    - name: Commit the candidate configuration
+      panos_commit_firewall:
+        provider: "{{ mydevice }}"
