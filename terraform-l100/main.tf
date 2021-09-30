@@ -51,9 +51,15 @@ resource "panos_security_policy" "security-rule" {
 
 resource "null_resource" "commit_job" {
     provisioner "local-exec" {
-        command = "./commit" panos.hostname 
+        command = "./commit"
     }
     depends_on = [
         panos_security_policy.security-rule
     ]
+}
+
+data "panos_system_info" "ngfw_info" { }
+
+output "info" {
+  value = data.panos_system_info.ngfw_info
 }
