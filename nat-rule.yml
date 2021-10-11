@@ -22,10 +22,10 @@
         destination_zone: "outside"
         source_ip: ["any"]
         destination_ip: ["10.10.10.1"]
-        service: "service-tcp-221"
+        service: "any"
         snat_type: "dynamic-ip-and-port"
-        snat_interface: ["ethernet1/1"]
-        dnat_address: ["10.0.1.101"]
+        snat_interface: "ethernet1/1"
+        dnat_address: "10.0.1.101"
         dnat_port: "22"
         #dnat_dynamic_address: "1.1.1.1"
         #dnat_dynamic_port: "80"
