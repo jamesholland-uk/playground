@@ -1,0 +1,48 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    palo_provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create dynamic NAT rule on the firewall
+      panos_nat_rule:
+        provider: "{{ palo_provider }}"
+        rule_name: "Ansible test 1"
+        source_zone: ["inside"]
+        destination_zone: "outside"
+        source_ip: ["any"]
+        destination_ip: ["10.10.10.1"]
+        service: "any"
+        snat_type: "dynamic-ip-and-port"
+        snat_interface: "ethernet1/1"
+        dnat_address: "10.0.1.101"
+        dnat_port: "22"
+        #dnat_dynamic_address: "1.1.1.1"
+        #dnat_dynamic_port: "80"
+        #dnat_dynamic_distribution: "Round Robin"
+    - name: Create dynamic NAT rule on the firewall 2
+      panos_nat_rule:
+        provider: "{{ palo_provider }}"
+        rule_name: "Ansible test 2"
+        source_zone: ["inside"]
+        destination_zone: "outside"
+        source_ip: ["any"]
+        destination_ip: ["10.10.10.1"]
+        service: "any"
+        snat_type: "dynamic-ip-and-port"
+        snat_interface: "ethernet1/1"
+        dnat_address: "10.0.1.101"
+        dnat_port: "22"
+        #dnat_dynamic_address: "1.1.1.1"
+        #dnat_dynamic_port: "80"
+        #dnat_dynamic_distribution: "Round Robin"

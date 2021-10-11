@@ -1,0 +1,38 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    palo_provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create security rule
+      panos_security_rule:
+        provider: "{{ palo_provider }}"
+        rule_name: "Ansible test 1"
+        source_zone: ["inside"]
+        destination_zone: ["outside"]
+        source_ip: ["1.1.1.1"]
+        destination_ip: ["2.2.2.2"]
+        application: "any"
+        service: "any"
+        action: "allow"
+    - name: Create security rule
+      panos_security_rule:
+        provider: "{{ palo_provider }}"
+        rule_name: "Ansible test 2"
+        source_zone: ["inside"]
+        destination_zone: ["outside"]
+        source_ip: ["1.1.1.1"]
+        destination_ip: ["2.2.2.2"]
+        application: "any"
+        service: "any"
+        action: "allow"

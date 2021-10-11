@@ -1,0 +1,22 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Commit and Push template configuration
+      panos_commit_push:
+        provider: "{{ device }}"
+        style: "template stack"
+        name: "{{ template_stack }}"
+        #force_template_values: true
