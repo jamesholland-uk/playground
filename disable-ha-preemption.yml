@@ -1,0 +1,21 @@
+---
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Disable preemption on primary device
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: "{{ device }}"
+        cmd: "set"
+        xpath: |
+          /config/devices/entry[@name='localhost.localdomain']
+          /deviceconfig/high-availability/group
+        element: |
+          <election-option><preemptive>no</preemptive></election-option>
