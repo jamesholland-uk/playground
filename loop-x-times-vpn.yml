@@ -1,0 +1,77 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("vm500") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Add zone
+      panos_zone:
+        provider: "{{ provider }}"
+        zone: "outside"
+        mode: "layer3"
+
+    - name: Add eth1/1
+      panos_interface:
+        provider: "{{ provider }}"
+        if_name: "ethernet1/1"
+        mode: "layer3"
+        ip: ["192.168.1.1/24"]
+        enable_dhcp: false
+        zone_name: "outside"
+
+    - name: Add tunnel.1
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.1"
+
+    - name: Add IKE gateway
+      panos_ike_gateway:
+        provider: "{{ provider }}"
+        name: "ike-gw"
+        interface: "ethernet1/1"
+        peer_ip_value: "1.2.3.4"
+        pre_shared_key: "CHANGEME"
+
+    - name: Add IPSec tunnels - block1
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-a-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.1"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 199, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block1
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-a-%03d' | format(item) }}"
+        remote: "{{ '1.1.1.%1d' | format(item) }}"
+      loop: "{{ range(0, 199, 1) | list }}"
+
+    - name: Add IPSec tunnels - block2
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-b-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.1"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 199, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block2
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-b-%03d' | format(item) }}"
+        remote: "{{ '1.1.2.%1d' | format(item) }}"
+      loop: "{{ range(0, 199, 1) | list }}"

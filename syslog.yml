@@ -1,0 +1,30 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("homelabrama") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create syslog server profile
+      panos_syslog_profile:
+        provider: "{{ provider }}"
+        name: "new-syslog-server-profile"
+        device_group: "lab-vm-series"
+
+    - name: Create syslog server for server profile
+      panos_syslog_server:
+        provider: "{{ provider }}"
+        syslog_profile: "new-syslog-server-profile"
+        name: "syslog-server-1"
+        server: "10.1.1.1"
+        syslog_port: 514
+        device_group: "lab-vm-series"

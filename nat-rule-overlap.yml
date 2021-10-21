@@ -1,5 +1,5 @@
 ---
-# Intentional shadowing rule to test commit warngings
+# Intentional shadowing rule to test commit warnings
 - name: Palo Alto Playbook
   hosts: '{{ target | default("firewall") }}'
   connection: local

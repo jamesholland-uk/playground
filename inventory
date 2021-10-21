@@ -1,5 +1,7 @@
 firewall
 ha_pair
+poclab
+vm500
 
 panorama
 panorama_ha_pair
