@@ -28,11 +28,7 @@
         ip: ["192.168.1.1/24"]
         enable_dhcp: false
         zone_name: "outside"
-
-    - name: Add tunnel.1
-      panos_tunnel:
-        provider: "{{ provider }}"
-        if_name: "tunnel.1"
+        vr_name: "default"
 
     - name: Add IKE gateway
       panos_ike_gateway:
@@ -42,6 +38,14 @@
         peer_ip_value: "1.2.3.4"
         pre_shared_key: "CHANGEME"
 
+    # block 1: 1-200
+    - name: Add tunnel.1
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.1"
+        zone_name: "outside"
+        vr_name: "default"
+
     - name: Add IPSec tunnels - block1
       panos_ipsec_tunnel:
         provider: "{{ provider }}"
@@ -49,7 +53,7 @@
         tunnel_interface: "tunnel.1"
         ak_ike_gateway: "ike-gw"
         ak_ipsec_crypto_profile: "default"
-      loop: "{{ range(0, 199, 1) | list }}"
+      loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block1
       panos_ipsec_ipv4_proxyid:
@@ -57,16 +61,24 @@
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-a-%03d' | format(item) }}"
         remote: "{{ '1.1.1.%1d' | format(item) }}"
-      loop: "{{ range(0, 199, 1) | list }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 2: 201-400
+    - name: Add tunnel.2
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.2"
+        zone_name: "outside"
+        vr_name: "default"
 
     - name: Add IPSec tunnels - block2
       panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-b-%03d' | format(item) }}"
-        tunnel_interface: "tunnel.1"
+        tunnel_interface: "tunnel.2"
         ak_ike_gateway: "ike-gw"
         ak_ipsec_crypto_profile: "default"
-      loop: "{{ range(0, 199, 1) | list }}"
+      loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block2
       panos_ipsec_ipv4_proxyid:
@@ -74,4 +86,454 @@
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-b-%03d' | format(item) }}"
         remote: "{{ '1.1.2.%1d' | format(item) }}"
-      loop: "{{ range(0, 199, 1) | list }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 3
+    - name: Add tunnel.3
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.3"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block3
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-c-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.3"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block3
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-c-%03d' | format(item) }}"
+        remote: "{{ '1.1.3.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 4
+    - name: Add tunnel.4
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.4"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block4
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-d-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.4"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block4
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-d-%03d' | format(item) }}"
+        remote: "{{ '1.1.4.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 5
+    - name: Add tunnel.5
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.5"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block5
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-e-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.5"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block5
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-e-%03d' | format(item) }}"
+        remote: "{{ '1.1.5.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 6
+    - name: Add tunnel.6
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.6"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block6
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-f-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.6"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block6
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-f-%03d' | format(item) }}"
+        remote: "{{ '1.1.6.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 7
+    - name: Add tunnel.7
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.7"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block7
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-g-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.7"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block7
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-g-%03d' | format(item) }}"
+        remote: "{{ '1.1.7.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 8
+    - name: Add tunnel.8
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.8"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block8
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-h-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.8"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block8
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-h-%03d' | format(item) }}"
+        remote: "{{ '1.1.8.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 9
+    - name: Add tunnel.9
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.9"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block9
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-i-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.9"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block9
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-ib-%03d' | format(item) }}"
+        remote: "{{ '1.1.9.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 10
+    - name: Add tunnel.10
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.10"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block10
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-j-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.10"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block10
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-j-%03d' | format(item) }}"
+        remote: "{{ '1.1.10.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 11
+    - name: Add tunnel.11
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.11"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block11
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-k-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.11"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block11
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-k-%03d' | format(item) }}"
+        remote: "{{ '1.1.11.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 12
+    - name: Add tunnel.12
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.12"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block12
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-l-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.12"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block12
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-l-%03d' | format(item) }}"
+        remote: "{{ '1.1.12.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 13
+    - name: Add tunnel.13
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.13"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block13
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-m-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.13"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block13
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-m-%03d' | format(item) }}"
+        remote: "{{ '1.1.13.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 14
+    - name: Add tunnel.14
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.14"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block14
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-n-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.14"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block14
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-n-%03d' | format(item) }}"
+        remote: "{{ '1.1.14.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 15
+    - name: Add tunnel.15
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.15"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block15
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-o-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.15"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block15
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-o-%03d' | format(item) }}"
+        remote: "{{ '1.1.15.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 16
+    - name: Add tunnel.16
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.16"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block16
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-p-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.16"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block16
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-p-%03d' | format(item) }}"
+        remote: "{{ '1.1.16.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 17
+    - name: Add tunnel.17
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.17"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block17
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-qb-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.17"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block17
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-q-%03d' | format(item) }}"
+        remote: "{{ '1.1.17.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 18
+    - name: Add tunnel.18
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.18"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block18
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-r-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.18"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block18
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-r-%03d' | format(item) }}"
+        remote: "{{ '1.1.18.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 19
+    - name: Add tunnel.19
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.19"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block19
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-s-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.19"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block19
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-s-%03d' | format(item) }}"
+        remote: "{{ '1.1.19.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    # block 20
+    - name: Add tunnel.20
+      panos_tunnel:
+        provider: "{{ provider }}"
+        if_name: "tunnel.20"
+        zone_name: "outside"
+        vr_name: "default"
+
+    - name: Add IPSec tunnels - block20
+      panos_ipsec_tunnel:
+        provider: "{{ provider }}"
+        name: "{{ 'autovpn-t-%03d' | format(item) }}"
+        tunnel_interface: "tunnel.20"
+        ak_ike_gateway: "ike-gw"
+        ak_ipsec_crypto_profile: "default"
+      loop: "{{ range(0, 200, 1) | list }}"
+
+    - name: Add IPSec IPv4 Proxy IDs - block20
+      panos_ipsec_ipv4_proxyid:
+        provider: "{{ provider }}"
+        name: "{{ 'proxyID%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-t-%03d' | format(item) }}"
+        remote: "{{ '1.1.20.%1d' | format(item) }}"
+      loop: "{{ range(0, 200, 1) | list }}"
