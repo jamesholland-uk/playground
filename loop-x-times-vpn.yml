@@ -259,7 +259,7 @@
       panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
-        tunnel_name: "{{ 'autovpn-ib-%03d' | format(item) }}"
+        tunnel_name: "{{ 'autovpn-i-%03d' | format(item) }}"
         remote: "{{ '1.1.9.%1d' | format(item) }}"
       loop: "{{ range(0, 200, 1) | list }}"
 
