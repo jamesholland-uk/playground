@@ -449,7 +449,7 @@
     - name: Add IPSec tunnels - block17
       panos_ipsec_tunnel:
         provider: "{{ provider }}"
-        name: "{{ 'autovpn-qb-%03d' | format(item) }}"
+        name: "{{ 'autovpn-q-%03d' | format(item) }}"
         tunnel_interface: "tunnel.17"
         ak_ike_gateway: "ike-gw"
         ak_ipsec_crypto_profile: "default"
