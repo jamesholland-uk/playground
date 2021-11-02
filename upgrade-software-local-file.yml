@@ -1,0 +1,52 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    # To upgrade PAN-OS, and pre-requisite content upgrade, from local files for airgapped firewall
+    - name: Import content file into PAN-OS
+      panos_import:
+        provider: "{{ provider }}"
+        category: content
+        file: /Users/jholland/Desktop/panupv2-all-apps-8480-7019
+    - name: Install content - op as XML
+      panos_op:
+        provider: "{{ provider }}"
+        cmd: "<request><content><upgrade><install><skip-content-validity-check>yes</skip-content-validity-check><file>panupv2-all-apps-8480-7019</file></install></upgrade></content></request>"
+        cmd_is_xml: true
+    # Ideally a check here to wait for content to install, and check it was sucessful
+    - name: Import software image into PAN-OS
+      panos_import:
+        provider: "{{ provider }}"
+        category: software
+        file: /Users/jholland/Desktop/PanOS_vm-9.1.1
+    - name: Install software - op as CLI
+      panos_op:
+        provider: "{{ provider }}"
+        cmd: "request system software install version 9.1.1"
+    # Ideally a check here to wait for install, make sure it was successful, then reboot
+
+    #TRASH
+    # - name: Update content
+    #   panos_dynamic_updates:
+    #     provider: '{{ provider }}'
+    # - name: Install content - op
+    #   panos_op:
+    #     provider: '{{ provider }}'
+    #     cmd: 'request content upgrade install skip-content-validity-check yes file panupv2-all-contents-8334-6362'
+    # - name: Install software
+    #   panos_software:
+    #     provider: '{{ provider }}'
+    #     version: '9.1.1'
+    #     restart: true
