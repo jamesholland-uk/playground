@@ -6,10 +6,14 @@
 #     00:D0:11:00:77:10,10.10.10.1,my-hostname
 
 # Variables
+# Use *one* of these input variables to take an input file, $1 for command line arguement, of point to a file
 input=$1
 input="your-input-csv-file"
+# The firewall management IP or FQDN
 host="your-hostname"
+# API key for the firewall
 key="your-api-key"
+# The interface on which the DHCP server is configured
 interface="your ethernetX/Y interface"
 
 # Loop
