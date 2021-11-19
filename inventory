@@ -2,6 +2,7 @@ firewall
 ha_pair
 poclab
 vm500
+vm-series-a
 
 panorama
 panorama_ha_pair
