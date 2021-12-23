@@ -1,0 +1,53 @@
+---
+# panos_facts_more.yml - Gather seected bits of info from a PAN-OS device.
+#
+# Description
+# ===========
+#
+# Uses various modules to gather data about a PAN-OS device.
+#
+# This playbook requires connection details for the device to be specified in the variables 'ip_address', 'username',
+# and 'password'.  These may be defined as host variables (see `host_vars/firewall.yml` for an example) or
+# extra vars.
+#
+#
+# Usage
+# =====
+#
+#   $ ansible-playbook -i inventory panos_facts_more.yml
+
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Get security rules (facts)
+      paloaltonetworks.panos.panos_security_rule_facts:
+        provider: "{{ device }}"
+        details: true
+      register: sec_rules
+
+    - name: Get general info (facts)
+      paloaltonetworks.panos.panos_facts:
+        provider: "{{ device }}"
+
+    - name: Display security rules
+      debug:
+        msg:
+          - "{{ sec_rules }}"
+
+    - name: Display interfaces
+      debug:
+        msg:
+          - "{{ ansible_facts['net_interfaces'] }}"
+
+    - name: Display routes
+      debug:
+        msg:
+          - "{{ ansible_facts['net_routing_table'] }}"
