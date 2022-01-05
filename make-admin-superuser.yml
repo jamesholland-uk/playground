@@ -1,0 +1,31 @@
+---
+#
+# Ansible playbook to make an existing administrator in Panorama a superuser
+#
+# Example usage: ansible-playbook -i inventory make-admin-superuser.yml -e "admin_user=alice"
+#
+
+- hosts: '{{ target | default("homelabrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Change administrator to superuser
+      paloaltonetworks.panos.panos_administrator:
+        provider: "{{ device }}"
+        admin_username: "{{ admin_user }}"
+        superuser: true
+
+    - name: Commit
+      paloaltonetworks.panos.panos_commit_panorama:
+        provider: "{{ device }}"
+      register: results
+
+    - debug:
+        msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results.details }}"
