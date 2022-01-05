@@ -1,6 +1,6 @@
 ---
 #
-# Ansible playbook to make an existing administrator in Panorama a superuser
+# Ansible playbook to check an existing administrator's role in Panorama, then make them a superuser
 #
 # Example usage: ansible-playbook -i inventory make-admin-superuser.yml -e "admin_user=alice"
 #
@@ -16,6 +16,23 @@
       api_key: "{{ api_key | default(omit) }}"
 
   tasks:
+    - name: Get admin user's current role details, and register the response
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        cmd: '<show><config><running><xpath>mgt-config/users/entry[@name="{{ admin_user }}"]/permissions/role-based</xpath></running></config></show>'
+        cmd_is_xml: true
+      register: adminresult
+
+    - name: Parse out role from XML response
+      community.general.xml:
+        xmlstring: "{{ adminresult.stdout_xml }}"
+        xpath: /response[@status='success']/result/role-based/custom/profile
+        content: text
+      register: therole
+
+    - debug:
+        msg: "{{ therole.matches[0].profile }}"
+
     - name: Change administrator to superuser
       paloaltonetworks.panos.panos_administrator:
         provider: "{{ device }}"
