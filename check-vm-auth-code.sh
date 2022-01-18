@@ -2,15 +2,14 @@
 
 #
 # A (not very good, very untested) script to check usage of multi-use VM-Series auth codes, and alert via email (Mailgun) if a threshold is breached
-#
 # Use at your own peril
 #
 
 #
 # Usage: check-vm-auth-code.sh <licensing-api-key> <auth-code> <tolerance> <API key for Mailgun> <email address for alerting>
-#
 # Example: check-vm-auth-code.sh 7eccae9333361f3cbd798ee1e8c70bad9dfe C12345 75 key-1234567890 test@test.local
 #
+
 apikey=$1
 authcode=$2
 tolerance=$3
