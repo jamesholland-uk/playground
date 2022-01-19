@@ -19,7 +19,13 @@
         zone: "dmz"
         mode: "layer3"
 
-    - name: ethernet1/1 in zone dmz
+    - name: create Internet zone
+      panos_zone:
+        provider: "{{ mydevice }}"
+        zone: "internet"
+        mode: "layer3"
+
+    - name: ethernet interface in zone dmz
       panos_interface:
         provider: "{{ mydevice }}"
         if_name: "ethernet1/9"
@@ -52,6 +58,6 @@
         service: ["ssh-tcp-22"]
         action: "allow"
 
-    - name: Commit the candidate configuration
-      panos_commit_firewall:
-        provider: "{{ mydevice }}"
+    # - name: Commit the candidate configuration
+    #   panos_commit_firewall:
+    #     provider: "{{ mydevice }}"
