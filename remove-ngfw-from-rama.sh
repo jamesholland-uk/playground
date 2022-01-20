@@ -1,16 +1,18 @@
 # Remove a NGFW from Panorama
 
+# Requires "xmllint": apt-get install libxml2-utils
+
 # Variables:
 # Panorama API Key
-key=LUFRPT1ta21GZlZQVXptOGR0YXF2MFppOEtRNjNEbFk9ck9vc2tGcmlHV0tDbWRFa2cxcGUxSFhBN1JvK2tlMXFZK3dqZHp2UDJvdlZnaFRSaWs5VThKMHJJYXJ0dllUcQ==
+key=
 # Panorama IP or hostname
-panoramaip=rama.jamoi.xyz
+panoramaip=
 # Serial number of NGFW to be removed
-ngfwserial=123423423423423423
+ngfwserial=
 # Device Group of NGFW
-devicegroup=new-dg
+devicegroup=
 # Template Stack of NGFW
-templatestack=new-tmplstack
+templatestack=
 
 # Remove NGFW from Device Group
 printf "\nRemoving NGFW from Device Group\n"
@@ -25,13 +27,13 @@ printf "\n\nRemoving NGFW Device\n"
 curl -ksd "key=$key&type=config&action=delete&xpath=/config/mgt-config/devices/entry[@name='"$ngfwserial"']" https://$panoramaip/api
 
 # Commit to Panorama
-response=$(curl -skd "key=$key&type=commit&cmd=<commit-all></commit-all>" https://$host/api)
+response=$(curl -skd "key=$key&type=commit&cmd=<commit-all></commit-all>" https://$panoramaip/api)
 
 # Get commit job ID
 job=$(xmllint --xpath 'string(//response/result/job)' - <<< $response)
 
 # Get commit job status
-joboutput=$(curl -skd "key=$key&type=op&cmd=<show><jobs><id>$job</id></jobs></show>" https://$host/api)
+joboutput=$(curl -skd "key=$key&type=op&cmd=<show><jobs><id>$job</id></jobs></show>" https://$panoramaip/api)
 jobstatus=$(xmllint --xpath 'string(//response/result/job/status)' - <<< $joboutput)
 
 # If job's not FINished, loop until it is...
@@ -39,7 +41,7 @@ while [ $jobstatus != "FIN" ]
 do
     echo "Commit status: "$jobstatus
     sleep 5
-    joboutput=$(curl -skd "key=$key&type=op&cmd=<show><jobs><id>$job</id></jobs></show>" https://$host/api)
+    joboutput=$(curl -skd "key=$key&type=op&cmd=<show><jobs><id>$job</id></jobs></show>" https://$panoramaip/api)
     jobstatus=$(xmllint --xpath 'string(//response/result/job/status)' - <<< $joboutput)
 done
 
