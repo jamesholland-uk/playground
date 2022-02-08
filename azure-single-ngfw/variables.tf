@@ -30,3 +30,22 @@ variable "common_vmseries_version"{
   description = "VM-Series PAN-OS version"
   type        = string
 }
+
+variable "storage_account_name" {
+  description = <<-EOF
+  Default name of the storage account to create for bootstrap.
+  The name you choose must be unique across Azure. The name also must be between 3 and 24 characters in length, and may include only numbers and lowercase letters.
+  EOF
+  default     = "pantfstorage"
+  type        = string
+}
+
+variable "files" {
+  description = "Map of all files to copy to bootstrap bucket. The keys are local paths, the values are remote paths. Always use slash `/` as directory separator (unix-like), not the backslash `\\`. For example `{\"dir/my.txt\" = \"config/init-cfg.txt\"}`"
+  default     = {}
+  type        = map(string)
+}
+
+variable "network_security_groups" {
+  description = "Definition of Network Security Groups to create. Refer to the `vnet` module documentation for more information."
+}
