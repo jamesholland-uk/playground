@@ -1,6 +1,6 @@
 ---
 - name: Palo Alto Playbook
-  hosts: '{{ target | default("homelabrama") }}'
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:
