@@ -1,6 +1,6 @@
 firewall
 ha_pair
-poclab
+labfw
 vm500
 vm-series-a
 
@@ -8,3 +8,4 @@ panorama
 panorama_ha_pair
 awsrama
 homelabrama
+ldnrama

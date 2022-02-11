@@ -1,0 +1,37 @@
+---
+#
+# aggregate_interface_and_subinterface - Creating aggregate interfaces and subinterfaces on a PAN-OS device via Panorama.
+#
+
+- hosts: '{{ target | default("ldnrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Configure aggregate interface
+      panos_aggregate_interface:
+        provider: "{{ device }}"
+        template: "pa-5060-template"
+        vsys: "vsys1" # Must be defined when targeting Panorama, or interface will not be imported into a VSYS and zone assignment will fail
+        if_name: ae2
+        zone_name: 5060_dmz
+
+    - name: Configure sub-interface
+      panos_l3_subinterface:
+        provider: "{{ device }}"
+        template: "pa-5060-template"
+        vsys: "vsys1" # Must be defined when targeting Panorama, or interface will not be imported into a VSYS and zone assignment will fail
+        name: "ae2.3"
+        tag: 300
+        enable_dhcp: false
+        ip: ["10.1.1.1/24"]
+        zone_name: "5060_dmz"
