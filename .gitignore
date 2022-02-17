@@ -26,3 +26,4 @@ credentials.json
 *cred*
 host_vars/*
 .terraform.lock.hcl
+panos-terraform-stuff/homelabrama/.terraform.lock.hcl
