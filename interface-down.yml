@@ -1,0 +1,21 @@
+---
+- hosts: '{{ target | default("labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+      api_key: '{{ api_key | default(omit) }}'
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: test
+      panos_type_cmd:
+        provider: '{{ device }}'
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/network/interface/ethernet/entry[@name='ethernet1/3']"
+        element: "<link-state>down</link-state>"
+    
