@@ -1,0 +1,20 @@
+---
+- hosts: '{{ target | default("homelabrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+      serial_number: "{{ serialnumber }}"
+
+  tasks:
+    - name: Download PAN-OS upgrade to managed device via Panorama
+      paloaltonetworks.panos.panos_software:
+        provider: "{{ device }}"
+        version: "{{ newversion }}"
+        sync_to_peer: false
+        install: false
+        restart: false
