@@ -38,13 +38,13 @@
   tasks:
     - name: Create directories
       ansible.builtin.file:
-        path: "{{ item.name }}"
+        path: "bootstrap/{{ item.name }}"
         state: directory
       with_items: "{{ directories }}"
 
     - name: Create init-cfg.txt
       copy:
-        dest: "config/init-cfg.txt"
+        dest: "bootstrap/config/init-cfg.txt"
         content: |
           type=dhcp
           hostname={{ hostname }}
@@ -59,15 +59,19 @@
           vm-auth-key={{ vmauthkey }}
 
     - name: Create bootstrap ISO
-      community.general.iso_create:
-        src_files:
-          - config/init-cfg.txt
-          - software
-          - license
-          - contents
-          - plugins
-        dest_iso: bootstrap.iso
-        vol_ident: "BOOTSTRAP"
-        interchange_level: 4
-        joliet: 3
-        rock_ridge: 1.09
+      shell: "mkisofs -o bootstrap.iso -iso-level 4 bootstrap"
+
+    # - name: Create bootstrap ISO
+    #   community.general.iso_create:
+    #     src_files:
+    #       - bootstrap/config/init-cfg.txt
+    #       - bootstrap/software
+    #       - bootstrap/license
+    #       - bootstrap/contents
+    #       - bootstrap/plugins
+    #     dest_iso: bootstrap.iso
+    #     vol_ident: "BOOTSTRAP"
+    #     interchange_level: 4
+    #     joliet: 3
+    #     rock_ridge: 1.09
+
