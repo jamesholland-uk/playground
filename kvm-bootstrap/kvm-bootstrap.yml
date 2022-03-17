@@ -1,0 +1,74 @@
+---
+- name: KVM Bootstrap
+  hosts: localhost
+
+  # Reqs: pycdlib
+  
+  vars:
+    ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
+
+    # FQDN/hostname for the firewall
+    hostname: 'fw01'
+    # IPv6 address
+    ipv6_address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+    # IPv6 gateway
+    ipv6_gateway: '2001:0db8:85a3:0000:ffff:ffff:ffff:ffff'
+    # IPv6 subnet
+    ipv6_subnet: '/64'
+    # DNS server
+    dns_server01: '2044:0db8:85a3:0000:ffff:ffff:ffff:ffff'
+    dns_server02: '2045:0db8:85a3:0000:ffff:ffff:ffff:ffff'
+    # Group name for configuration membership
+    device_group: 'train-dg'
+    template_stack: 'train-ts'
+    # URL for configuration management
+    panorama01: '2004:0db8:85a3:0000:0000:8a2e:0370:7334'
+    panorama02: '2004:0db8:85a3:0000:0000:8a2e:0370:7335'
+    # EXTRA - Auth for Panorama
+    vmauthkey: 'ABCDEFGHIJKL'
+
+    # Directories for bootstrap ISO
+    directories:
+    - name: 'config'
+    - name: 'software'
+    - name: 'license'
+    - name: 'contents'
+    - name: 'plugins'
+
+  tasks:
+
+  - name: Create directories
+    ansible.builtin.file:
+      path: '{{ item.name }}'
+      state: directory
+    with_items: '{{ directories }}'
+
+  - name: Create init-cfg.txt
+    copy:
+      dest: "config/init-cfg.txt"
+      content: |
+        type=dhcp
+        hostname={{ hostname }}
+        ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
+        ipv6-default-gateway={{ ipv6_gateway }}
+        panorama-server={{ panorama01 }}
+        panorama-server-2={{ panorama02 }}
+        dgname={{ device_group }}
+        tplname={{ template_stack }}
+        dns-primary={{ dns_server01 }}
+        dns-secondary={{ dns_server02 }}
+        vm-auth-key={{ vmauthkey }}
+
+  - name: Create bootstrap ISO
+    community.general.iso_create:
+      src_files:
+        - config/init-cfg.txt
+        - software
+        - license
+        - contents
+        - plugins
+      dest_iso: bootstrap.iso
+      vol_ident: 'BOOTSTRAP'
+      interchange_level: 4
+      joliet: 3
+      rock_ridge: 1.09
