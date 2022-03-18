@@ -30,7 +30,7 @@
       - name: "config"
       - name: "software"
       - name: "license"
-      - name: "contents"
+      - name: "content"
       - name: "plugins"
 
   tasks:
@@ -67,7 +67,7 @@
     #       - bootstrap/config/init-cfg.txt
     #       - bootstrap/software
     #       - bootstrap/license
-    #       - bootstrap/contents
+    #       - bootstrap/content
     #       - bootstrap/plugins
     #     dest_iso: bootstrap.iso
     #     vol_ident: "BOOTSTRAP"
