@@ -2,8 +2,6 @@
 - name: KVM Bootstrap
   hosts: localhost
 
-  # Reqs: pycdlib
-
   vars:
     #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
 
@@ -58,9 +56,11 @@
           dns-secondary={{ dns_server02 }}
           vm-auth-key={{ vmauthkey }}
 
+    # Reqs: mkisofs (Linux) or cdrtools (macOS)
     - name: Create bootstrap ISO
       shell: "mkisofs -o bootstrap.iso -iso-level 4 bootstrap"
 
+    # # Reqs: pycdlib via pip
     # - name: Create bootstrap ISO
     #   community.general.iso_create:
     #     src_files:
@@ -74,4 +74,10 @@
     #     interchange_level: 4
     #     joliet: 3
     #     rock_ridge: 1.09
+
+    - name: Download VM-Series base image
+      get_url:
+        url: https://jholland.jfrog.io/artifactory/default-generic-local/PA-VM-KVM-10.1.3.qcow2
+        checksum: sha256:70a6ee390fa721a8565a0b2e3f67826b6d5f064677ebfb4fbcde70454a697a52
+        dest: ./PA-VM-KVM-10.1.3.qcow2
 
