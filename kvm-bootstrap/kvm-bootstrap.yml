@@ -2,9 +2,6 @@
 - name: KVM Bootstrap
   hosts: all
 
-  collections:
-    - paloaltonetworks.panos
-
   vars:
     #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
 
@@ -12,14 +9,14 @@
     # FQDN/hostname for the firewall
     hostname: "fw01"
     # IPv6 address
-    ipv6_address: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+    ipv6_address: "fd85:e493:71ca::5"
     # IPv6 gateway
-    ipv6_gateway: "2001:0db8:85a3:0000:ffff:ffff:ffff:ffff"
+    ipv6_gateway: "fd85:e493:71ca::1"
     # IPv6 subnet
     ipv6_subnet: "/64"
     # DNS server
-    dns_server01: "2044:0db8:85a3:0000:ffff:ffff:ffff:ffff"
-    dns_server02: "2045:0db8:85a3:0000:ffff:ffff:ffff:ffff"
+    dns_server01: "2001:4860:4860::8888"
+    dns_server02: "2001:4860:4860::8844"
     # Group name for configuration membership
     device_group: "train-dg"
     template_stack: "train-ts"
@@ -30,12 +27,16 @@
     # EXTRA VARIABLES
     # Auth for Panorama
     vmauthkey: "ABCDEFGHIJKL"
+    # PAN-OS Version
+    panos_version: "10.1.4"
     # Non-utilised "dummy" IPv4 addressing
-    ipv4_address: "192.168.122.250/24"
+    ipv4_address: "192.168.122.250"
+    ipv4_mask: "255.255.255.0"
+    ipv4_gateway: "192.168.122.1"
     # Disk location of VM-Series base image
-    image_location: "/home/jholland/PA-VM-KVM-10.1.3.qcow2"
+    image_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
     # Disk location of bootstrap ISO for VM-Series
-    iso_location: "/home/jholland/bootstrap.iso"
+    iso_location: "/home/jholland/bootstrap{{ hostname }}.iso"
 
     # Directories for bootstrap ISO
     directories:
@@ -46,11 +47,11 @@
       - name: "plugins"
 
   tasks:
-    # - name: Create directories
-    #   ansible.builtin.file:
-    #     path: "bootstrap/{{ item.name }}"
-    #     state: directory
-    #   with_items: "{{ directories }}"
+    - name: Create directories
+      ansible.builtin.file:
+        path: "bootstrap/{{ item.name }}"
+        state: directory
+      with_items: "{{ directories }}"
 
     - name: Create init-cfg.txt
       copy:
@@ -59,6 +60,8 @@
           type=static
           hostname={{ hostname }}
           ip-address={{ ipv4_address }}
+          netmask={{ ipv4_mask }}
+          default-gateway={{ ipv4_gateway  }}
           ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
           ipv6-default-gateway={{ ipv6_gateway }}
           panorama-server={{ panorama01 }}
@@ -69,11 +72,17 @@
           dns-secondary={{ dns_server02 }}
           vm-auth-key={{ vmauthkey }}
 
+    - name: Remove existing bootstrap ISOs
+      ansible.builtin.file:
+        path: "{{ iso_location }}"
+        state: absent
+      become: yes
+
     # Reqs: mkisofs (Linux) or cdrtools (macOS)
     - name: Create bootstrap ISO
       shell: "mkisofs -o {{ iso_location }} -iso-level 4 bootstrap"
 
-    ## # Reqs: pycdlib via pip
+    ## # Reqs: pip install pycdlib
     ## # ** Does not work, unable to create ISO with a file inside a folder. Also non-idempotent anyway **
     ##
     ## - name: Create bootstrap ISO
