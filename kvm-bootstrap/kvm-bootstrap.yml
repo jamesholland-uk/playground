@@ -1,10 +1,14 @@
 ---
 - name: KVM Bootstrap
-  hosts: localhost
+  hosts: all
+
+  collections:
+    - paloaltonetworks.panos
 
   vars:
     #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
 
+    # GIVEN VARIABLES
     # FQDN/hostname for the firewall
     hostname: "fw01"
     # IPv6 address
@@ -22,8 +26,16 @@
     # URL for configuration management
     panorama01: "2004:0db8:85a3:0000:0000:8a2e:0370:7334"
     panorama02: "2004:0db8:85a3:0000:0000:8a2e:0370:7335"
-    # EXTRA - Auth for Panorama
+    
+    # EXTRA VARIABLES
+    # Auth for Panorama
     vmauthkey: "ABCDEFGHIJKL"
+    # Non-utilised "dummy" IPv4 addressing
+    ipv4_address: "192.168.122.250/24"
+    # Disk location of VM-Series base image
+    image_location: "/home/jholland/PA-VM-KVM-10.1.3.qcow2"
+    # Disk location of bootstrap ISO for VM-Series
+    iso_location: "/home/jholland/bootstrap.iso"
 
     # Directories for bootstrap ISO
     directories:
@@ -34,18 +46,19 @@
       - name: "plugins"
 
   tasks:
-    - name: Create directories
-      ansible.builtin.file:
-        path: "bootstrap/{{ item.name }}"
-        state: directory
-      with_items: "{{ directories }}"
+    # - name: Create directories
+    #   ansible.builtin.file:
+    #     path: "bootstrap/{{ item.name }}"
+    #     state: directory
+    #   with_items: "{{ directories }}"
 
     - name: Create init-cfg.txt
       copy:
         dest: "bootstrap/config/init-cfg.txt"
         content: |
-          type=dhcp
+          type=static
           hostname={{ hostname }}
+          ip-address={{ ipv4_address }}
           ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
           ipv6-default-gateway={{ ipv6_gateway }}
           panorama-server={{ panorama01 }}
@@ -58,26 +71,72 @@
 
     # Reqs: mkisofs (Linux) or cdrtools (macOS)
     - name: Create bootstrap ISO
-      shell: "mkisofs -o bootstrap.iso -iso-level 4 bootstrap"
+      shell: "mkisofs -o {{ iso_location }} -iso-level 4 bootstrap"
 
-    # # Reqs: pycdlib via pip
-    # - name: Create bootstrap ISO
-    #   community.general.iso_create:
-    #     src_files:
-    #       - bootstrap/config/init-cfg.txt
-    #       - bootstrap/software
-    #       - bootstrap/license
-    #       - bootstrap/content
-    #       - bootstrap/plugins
-    #     dest_iso: bootstrap.iso
-    #     vol_ident: "BOOTSTRAP"
-    #     interchange_level: 4
-    #     joliet: 3
-    #     rock_ridge: 1.09
+    ## # Reqs: pycdlib via pip
+    ## # ** Does not work, unable to create ISO with a file inside a folder. Also non-idempotent anyway **
+    ##
+    ## - name: Create bootstrap ISO
+    ##   community.general.iso_create:
+    ##     src_files:
+    ##       - bootstrap/config/init-cfg.txt
+    ##       - bootstrap/software
+    ##       - bootstrap/license
+    ##       - bootstrap/content
+    ##       - bootstrap/plugins
+    ##     dest_iso: {{ iso_location }}
+    ##     vol_ident: "BOOTSTRAP"
+    ##     interchange_level: 4
+    ##     joliet: 3
+    ##     rock_ridge: 1.09
 
-    - name: Download VM-Series base image
-      get_url:
-        url: https://jholland.jfrog.io/artifactory/default-generic-local/PA-VM-KVM-10.1.3.qcow2
-        checksum: sha256:70a6ee390fa721a8565a0b2e3f67826b6d5f064677ebfb4fbcde70454a697a52
-        dest: ./PA-VM-KVM-10.1.3.qcow2
 
+    # - name: Download VM-Series base image
+    #   get_url:
+    #     url: https://jholland.jfrog.io/artifactory/default-generic-local/PA-VM-KVM-10.1.3.qcow2
+    #     checksum: sha256:70a6ee390fa721a8565a0b2e3f67826b6d5f064677ebfb4fbcde70454a697a52
+    #     dest: {{ image_location }}
+
+    # Reqs "ansible-galaxy collection install community.libvirt"
+    - name: Get VMs list
+      community.libvirt.virt:
+        command: list_vms
+      register: existing_vms
+      changed_when: no
+      become: yes
+
+    - name: Display VMs
+      debug:
+        msg:
+          - "{{ existing_vms }}"
+
+    - name: Create VM if not exists
+      block:
+        - name: Create VM-Series VM
+          community.libvirt.virt:
+            command: define
+            xml: "{{ lookup('template', 'pa-vm-paramd.xml.j2') }}"
+          become: yes
+      when: "hostname not in existing_vms.list_vms"
+
+    - name: Get VMs list again
+      community.libvirt.virt:
+        command: list_vms
+      register: now_vms
+      changed_when: no
+      become: yes
+
+    - name: Display VMs
+      debug:
+        msg:
+          - "{{ now_vms }}"
+
+    - name: Start VM
+      community.libvirt.virt:
+        name: "{{ hostname }}"
+        state: running
+      register: vm_start_results
+      until: "vm_start_results is success"
+      retries: 15
+      delay: 2
+      become: yes

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<domain type="kvm">
+    <name>{{ hostname }}</name>
+    <memory>4194304</memory>
+    <currentMemory>4194304</currentMemory>
+    <vcpu placement="static">2</vcpu>
+    <os>
+        <type arch="x86_64">hvm</type>
+        <boot dev="hd"/>
+    </os>
+    <features>
+        <acpi/>
+        <apic/>
+        <pae/>
+    </features>
+    <clock offset="utc"/>
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+    <devices>
+        <emulator>/usr/bin/qemu-system-x86_64</emulator>
+        <disk type="file" device="disk">
+            <driver type="qcow2" name="qemu"/>
+            <source file="{{ image_location }}"/>
+            <target dev="vda" bus="virtio"/>
+        </disk>
+        <disk type="file" device="cdrom">
+            <driver name="qemu" type="raw"/>
+            <source file="{{ iso_location }}"/>
+            <target dev="sdc" bus="ide"/>
+            <readonly/>
+            <address type="drive" controller="0" bus="1" unit="0"/>
+        </disk>
+        <controller type="usb" index="0"/>
+        <controller type="ide" index="0"/>
+        <controller type="scsi" index="0"/>
+        <interface type='bridge'>
+            <source bridge='virbr0'/>
+            <model type='virtio'/>
+            <teaming type='persistent'/>
+        </interface>
+        <interface type='bridge'>
+            <source bridge='virbr0'/>
+            <model type='virtio'/>
+            <teaming type='persistent'/>
+        </interface>
+        <interface type='bridge'>
+            <source bridge='virbr0'/>
+            <model type='virtio'/>
+            <teaming type='persistent'/>
+        </interface>
+        <serial type="pty">
+            <source path="/dev/pts/1"/>
+            <target port="0"/>
+            <alias name="serial0"/>
+        </serial>
+        <console type="pty" tty="/dev/pts/1">
+            <source path="/dev/pts/1"/>
+            <target type="serial" port="0"/>
+            <alias name="serial0"/>
+        </console>
+    </devices>
+</domain> 
