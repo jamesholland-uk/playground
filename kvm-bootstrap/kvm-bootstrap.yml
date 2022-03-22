@@ -9,11 +9,13 @@
     # FQDN/hostname for the firewall
     hostname: "fw01"
     # IPv6 address
-    ipv6_address: "fd85:e493:71ca::5"
+    #ipv6_address: "fd85:e493:71ca::5"
+    ipv6_address: "2600:1900:40c0:a4f1:0:5::"
     # IPv6 gateway
-    ipv6_gateway: "fd85:e493:71ca::1"
+    #ipv6_gateway: "fd85:e493:71ca::1"
+    ipv6_gateway: "fe80::4001:aff:fe00:401"
     # IPv6 subnet
-    ipv6_subnet: "/64"
+    ipv6_subnet: "/128"
     # DNS server
     dns_server01: "2001:4860:4860::8888"
     dns_server02: "2001:4860:4860::8844"
