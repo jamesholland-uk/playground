@@ -49,6 +49,9 @@
     image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
     # Disk location of bootstrap ISO for VM-Series
     iso_location: "/home/jholland/bootstrap{{ hostname }}.iso"
+    # Getting the base image
+    image_url: "" # variable set in vars.yml
+    image_hash: "" # variable set in vars.yml
 
     # Directories for bootstrap ISO
     directories:
@@ -96,10 +99,8 @@
 
     - name: Download VM-Series base image
       ansible.builtin.get_url:
-        #url: "https://jholland.jfrog.io/artifactory/default-generic-local/PA-VM-KVM-10.1.3.qcow2"
-        #checksum: sha256:70a6ee390fa721a8565a0b2e3f67826b6d5f064677ebfb4fbcde70454a697a52
-        url: "https://drive.google.com/u/0/uc?id=19OQXhRllhI-wF0suWEsZjMhAZnwRkZpT&export=download&confirm=t"
-        checksum: sha256:8dd479cc45edc5ffd82ababd6f95e464575e74e749bff5ad51a31042611b49f2
+        url: "{{ image_url }}"
+        checksum: "{{ image_hash }}"
         dest: "{{ image_download_location }}"
 
     - name: Copy base image to runtime location
