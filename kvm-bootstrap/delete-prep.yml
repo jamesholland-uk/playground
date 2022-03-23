@@ -11,6 +11,8 @@
 
     # FQDN/hostname for the firewall
     hostname: "fw01"
+    # PAN-OS Version
+    panos_version: "10.1.4"
     # Disk location of VM-Series base image
     image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
     image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
