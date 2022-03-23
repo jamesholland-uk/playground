@@ -1,6 +1,11 @@
 ---
 - name: KVM Bootstrap
-  hosts: all
+  hosts:
+    all
+
+    # Reqs:
+    # "ansible-galaxy collection install community.libvirt"
+    # mkisofs (Linux) or cdrtools (macOS)
 
   vars:
     #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
@@ -27,10 +32,11 @@
     # URL for configuration management
     panorama01: "" # variable set in vars.yml
     panorama02: "" # variable set in vars.yml
-    
+
     # EXTRA VARIABLES
     # Auth for Panorama
     vmauthkey: "" # variable set in vars.yml
+    plugin_authkey: "" # variable set in vars.yml
     # PAN-OS Version
     panos_version: "10.1.4"
     # Non-utilised "dummy" IPv4 addressing
@@ -38,7 +44,8 @@
     ipv4_mask: "255.255.255.0"
     ipv4_gateway: "192.168.122.1"
     # Disk location of VM-Series base image
-    image_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
+    image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
+    image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
     # Disk location of bootstrap ISO for VM-Series
     iso_location: "/home/jholland/bootstrap{{ hostname }}.iso"
 
@@ -61,7 +68,7 @@
       copy:
         dest: "bootstrap/config/init-cfg.txt"
         content: |
-          type=dhcp
+          type=dhcp-client
           hostname={{ hostname }}
           panorama-server={{ panorama01 }}
           panorama-server-2={{ panorama02 }}
@@ -69,61 +76,43 @@
           tplname={{ template_stack }}
           dns-primary={{ dns_server01 }}
           dns-secondary={{ dns_server02 }}
-          vm-auth-key={{ vmauthkey }}
-#          ip-address={{ ipv4_address }}
-#          netmask={{ ipv4_mask }}
-#          default-gateway={{ ipv4_gateway  }}
-#          ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
-#          ipv6-default-gateway={{ ipv6_gateway }}
+          auth-key={{ plugin_authkey }}
+          plugin-op-commands=panorama-licensing-mode-on
+    #          vm-auth-key={{ vmauthkey }}
+    #          ip-address={{ ipv4_address }}
+    #          netmask={{ ipv4_mask }}
+    #          default-gateway={{ ipv4_gateway  }}
+    #          ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
+    #          ipv6-default-gateway={{ ipv6_gateway }}
 
-    - name: Remove existing bootstrap ISOs
-      ansible.builtin.file:
-        path: "{{ iso_location }}"
-        state: absent
-      become: yes
-
-    # Reqs: mkisofs (Linux) or cdrtools (macOS)
     - name: Create bootstrap ISO
       shell: "mkisofs -o {{ iso_location }} -iso-level 4 bootstrap"
 
-    ## # Reqs: pip install pycdlib
-    ## # ** Does not work, unable to create ISO with a file inside a folder. Also non-idempotent anyway **
-    ##
-    ## - name: Create bootstrap ISO
-    ##   community.general.iso_create:
-    ##     src_files:
-    ##       - bootstrap/config/init-cfg.txt
-    ##       - bootstrap/software
-    ##       - bootstrap/license
-    ##       - bootstrap/content
-    ##       - bootstrap/plugins
-    ##     dest_iso: {{ iso_location }}
-    ##     vol_ident: "BOOTSTRAP"
-    ##     interchange_level: 4
-    ##     joliet: 3
-    ##     rock_ridge: 1.09
+    - name: Download VM-Series base image
+      ansible.builtin.get_url:
+        #url: "https://jholland.jfrog.io/artifactory/default-generic-local/PA-VM-KVM-10.1.3.qcow2"
+        #checksum: sha256:70a6ee390fa721a8565a0b2e3f67826b6d5f064677ebfb4fbcde70454a697a52
+        url: "https://drive.google.com/u/0/uc?id=19OQXhRllhI-wF0suWEsZjMhAZnwRkZpT&export=download&confirm=t"
+        checksum: sha256:8dd479cc45edc5ffd82ababd6f95e464575e74e749bff5ad51a31042611b49f2
+        dest: "{{ image_download_location }}"
 
+    - name: Copy base image to runtime location
+      ansible.builtin.copy:
+        src: "{{ image_download_location }}"
+        dest: "{{ image_runtime_location }}"
+        remote_src: yes
 
-    # - name: Download VM-Series base image
-    #   get_url:
-    #     url: https://jholland.jfrog.io/artifactory/default-generic-local/PA-VM-KVM-10.1.3.qcow2
-    #     checksum: sha256:70a6ee390fa721a8565a0b2e3f67826b6d5f064677ebfb4fbcde70454a697a52
-    #     dest: {{ image_location }}
-
-    # Reqs "ansible-galaxy collection install community.libvirt"
     - name: Get VMs list
       community.libvirt.virt:
         command: list_vms
-      register: existing_vms
+      register: empty_vms
       changed_when: no
       become: yes
 
     - name: Display VMs
       debug:
         msg:
-          - "{{ existing_vms }}"
-
-# ADD TASK TO UNDEFINE VM BEFORE CREATION 
+          - "{{ empty_vms }}"
 
     - name: Create VM if not exists
       block:
@@ -132,9 +121,9 @@
             command: define
             xml: "{{ lookup('template', 'pa-vm-paramd.xml.j2') }}"
           become: yes
-      when: "hostname not in existing_vms.list_vms"
+      when: "hostname not in empty_vms.list_vms"
 
-    - name: Get VMs list again
+    - name: Get VMs list again again
       community.libvirt.virt:
         command: list_vms
       register: now_vms

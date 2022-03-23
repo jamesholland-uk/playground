@@ -1,0 +1,108 @@
+---
+- name: KVM Bootstrap Prep - Delete Old Stuff
+  hosts:
+    all
+
+    # Reqs:
+    # "ansible-galaxy collection install community.libvirt"
+
+  vars:
+    #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
+
+    # FQDN/hostname for the firewall
+    hostname: "fw01"
+    # Disk location of VM-Series base image
+    image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
+    image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
+    # Disk location of bootstrap ISO for VM-Series
+    iso_location: "/home/jholland/bootstrap{{ hostname }}.iso"
+
+  tasks:
+    - name: Gather VM list
+      community.libvirt.virt:
+        command: list_vms
+      register: existing_vms
+      changed_when: no
+      become: yes
+
+    - name: Display VMs
+      debug:
+        msg:
+          - "{{ existing_vms }}"
+
+    - name: Check if existing VM is running
+      block:
+        - name: Get VMs status
+          community.libvirt.virt:
+            name: "{{ hostname }}"
+            command: status
+          register: is_running
+          changed_when: no
+          become: yes
+      when: "hostname in existing_vms.list_vms"
+
+    - name: Display status
+      debug:
+        msg:
+          - "{{ is_running }}"
+
+    - name: Destroy (forcefully stop) VM if it exists
+      block:
+        - name: Destroy (forcefully stop) VM if it is running
+          block:
+            - name: Destroy (forcefully stop) VM
+              community.libvirt.virt:
+                name: "{{ hostname }}"
+                command: destroy
+              become: yes
+          when: is_running.status == "running"
+      when: "hostname in existing_vms.list_vms"
+
+    - name: Check again if existing VM is running
+      block:
+        - name: Get VMs status
+          community.libvirt.virt:
+            name: "{{ hostname }}"
+            command: status
+          register: is_running2
+          changed_when: no
+          become: yes
+      when: "hostname in existing_vms.list_vms"
+
+    - name: Display status
+      debug:
+        msg:
+          - "{{ is_running2 }}"
+
+    - name: Undefine (remove) VM
+      block:
+        - name: Undefine VM-Series VM
+          community.libvirt.virt:
+            name: "{{ hostname }}"
+            command: undefine
+          become: yes
+      when: "hostname in existing_vms.list_vms"
+
+    - name: Get VMs list again again
+      community.libvirt.virt:
+        command: list_vms
+      register: now_vms
+      changed_when: no
+      become: yes
+
+    - name: Display VMs
+      debug:
+        msg:
+          - "{{ now_vms }}"
+
+    - name: Remove existing bootstrap ISO
+      ansible.builtin.file:
+        path: "{{ iso_location }}"
+        state: absent
+      become: yes
+
+    - name: Remove existing runtime base image
+      ansible.builtin.file:
+        path: "{{ image_runtime_location }}"
+        state: absent
+      become: yes

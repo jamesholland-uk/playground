@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <domain type="kvm">
     <name>{{ hostname }}</name>
-    <memory>4194304</memory>
-    <currentMemory>4194304</currentMemory>
+    <memory unit='KB'>4718592</memory>
+    <currentMemory unit='KB'>4718592</currentMemory>
     <vcpu placement="static">2</vcpu>
     <os>
         <type arch="x86_64">hvm</type>
@@ -21,7 +21,7 @@
         <emulator>/usr/bin/qemu-system-x86_64</emulator>
         <disk type="file" device="disk">
             <driver type="qcow2" name="qemu"/>
-            <source file="{{ image_location }}"/>
+            <source file="{{ image_runtime_location }}"/>
             <target dev="vda" bus="virtio"/>
         </disk>
         <disk type="file" device="cdrom">
