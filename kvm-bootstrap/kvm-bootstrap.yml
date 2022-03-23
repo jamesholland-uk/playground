@@ -17,18 +17,20 @@
     # IPv6 subnet
     ipv6_subnet: "/128"
     # DNS server
-    dns_server01: "2001:4860:4860::8888"
-    dns_server02: "2001:4860:4860::8844"
+    #dns_server01: "2620:119:35::35"
+    #dns_server02: "2620:119:53::53"
+    dns_server01: "1.1.1.1"
+    dns_server02: "4.2.2.2"
     # Group name for configuration membership
     device_group: "train-dg"
     template_stack: "train-ts"
     # URL for configuration management
-    panorama01: "2004:0db8:85a3:0000:0000:8a2e:0370:7334"
-    panorama02: "2004:0db8:85a3:0000:0000:8a2e:0370:7335"
+    panorama01: "" # variable set in vars.yml
+    panorama02: "" # variable set in vars.yml
     
     # EXTRA VARIABLES
     # Auth for Panorama
-    vmauthkey: "ABCDEFGHIJKL"
+    vmauthkey: "" # variable set in vars.yml
     # PAN-OS Version
     panos_version: "10.1.4"
     # Non-utilised "dummy" IPv4 addressing
@@ -59,13 +61,8 @@
       copy:
         dest: "bootstrap/config/init-cfg.txt"
         content: |
-          type=static
+          type=dhcp
           hostname={{ hostname }}
-          ip-address={{ ipv4_address }}
-          netmask={{ ipv4_mask }}
-          default-gateway={{ ipv4_gateway  }}
-          ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
-          ipv6-default-gateway={{ ipv6_gateway }}
           panorama-server={{ panorama01 }}
           panorama-server-2={{ panorama02 }}
           dgname={{ device_group }}
@@ -73,6 +70,11 @@
           dns-primary={{ dns_server01 }}
           dns-secondary={{ dns_server02 }}
           vm-auth-key={{ vmauthkey }}
+#          ip-address={{ ipv4_address }}
+#          netmask={{ ipv4_mask }}
+#          default-gateway={{ ipv4_gateway  }}
+#          ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
+#          ipv6-default-gateway={{ ipv6_gateway }}
 
     - name: Remove existing bootstrap ISOs
       ansible.builtin.file:
@@ -120,6 +122,8 @@
       debug:
         msg:
           - "{{ existing_vms }}"
+
+# ADD TASK TO UNDEFINE VM BEFORE CREATION 
 
     - name: Create VM if not exists
       block:
