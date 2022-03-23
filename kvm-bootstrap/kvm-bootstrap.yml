@@ -44,6 +44,7 @@
     ipv4_mask: "255.255.255.0"
     ipv4_gateway: "192.168.122.1"
     # Disk location of VM-Series base image
+    image_download_dir: "/home/jholland/vm-images"
     image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
     image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
     # Disk location of bootstrap ISO for VM-Series
@@ -87,6 +88,11 @@
 
     - name: Create bootstrap ISO
       shell: "mkisofs -o {{ iso_location }} -iso-level 4 bootstrap"
+
+    - name: Create image directory
+      ansible.builtin.file:
+        path: "{{ image_download_dir }}"
+        state: directory
 
     - name: Download VM-Series base image
       ansible.builtin.get_url:

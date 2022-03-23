@@ -14,6 +14,7 @@
     # PAN-OS Version
     panos_version: "10.1.4"
     # Disk location of VM-Series base image
+    image_download_dir: "/home/jholland/vm-images"
     image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
     image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
     # Disk location of bootstrap ISO for VM-Series
@@ -103,8 +104,20 @@
         state: absent
       become: yes
 
+    - name: Remove bootstrap staging folder
+      ansible.builtin.file:
+        path: "bootstrap"
+        state: absent
+      become: yes
+
     - name: Remove existing runtime base image
       ansible.builtin.file:
         path: "{{ image_runtime_location }}"
+        state: absent
+      become: yes
+
+    - name: Remove download base image directory
+      ansible.builtin.file:
+        path: "{{ image_download_dir }}"
         state: absent
       become: yes
