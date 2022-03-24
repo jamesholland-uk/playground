@@ -23,6 +23,7 @@
       ansible.builtin.apt:
         name: mkisofs
         update_cache: yes
+        become: yes
 
     - name: Create directories
       ansible.builtin.file:
