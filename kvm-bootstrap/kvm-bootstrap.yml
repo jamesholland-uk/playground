@@ -19,7 +19,7 @@
       - name: "plugins"
 
   tasks:
-    - name: Update repositories cache and install "foo" package
+    - name: Update cache then install mkisofs
       ansible.builtin.apt:
         name: mkisofs
         update_cache: yes
