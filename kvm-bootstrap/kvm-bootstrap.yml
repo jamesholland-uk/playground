@@ -19,6 +19,11 @@
       - name: "plugins"
 
   tasks:
+    - name: Update repositories cache and install "foo" package
+      ansible.builtin.apt:
+        name: mkisofs
+        update_cache: yes
+
     - name: Create directories
       ansible.builtin.file:
         path: "bootstrap/{{ item.name }}"
