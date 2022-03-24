@@ -9,17 +9,6 @@
   vars:
     #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
 
-    # FQDN/hostname for the firewall
-    hostname: "fw01"
-    # PAN-OS Version
-    panos_version: "10.1.4"
-    # Disk location of VM-Series base image
-    image_download_dir: "/home/jholland/vm-images"
-    image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
-    image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
-    # Disk location of bootstrap ISO for VM-Series
-    iso_location: "/home/jholland/bootstrap{{ hostname }}.iso"
-
   tasks:
     - name: Gather VM list
       community.libvirt.virt:
@@ -106,7 +95,7 @@
 
     - name: Remove bootstrap staging folder
       ansible.builtin.file:
-        path: "bootstrap"
+        path: "{{ bootstrap_location }}"
         state: absent
       become: yes
 

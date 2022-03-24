@@ -27,13 +27,13 @@
 
     - name: Create directories
       ansible.builtin.file:
-        path: "bootstrap/{{ item.name }}"
+        path: "{{ bootstrap_location }}/{{ item.name }}"
         state: directory
       with_items: "{{ directories }}"
 
     - name: Create init-cfg.txt
       copy:
-        dest: "bootstrap/config/init-cfg.txt"
+        dest: "{{ bootstrap_location }}/config/init-cfg.txt"
         content: |
           type=dhcp-client
           hostname={{ hostname }}
@@ -52,7 +52,7 @@
     #          ipv6-default-gateway={{ ipv6_gateway }}
 
     - name: Create bootstrap ISO
-      shell: "mkisofs -o {{ iso_location }} -iso-level 4 bootstrap"
+      shell: "mkisofs -o {{ iso_location }} -iso-level 4 {{ bootstrap_location }}"
 
     - name: Create image directory
       ansible.builtin.file:
