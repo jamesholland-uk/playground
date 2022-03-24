@@ -35,7 +35,12 @@
       copy:
         dest: "{{ bootstrap_location }}/config/init-cfg.txt"
         content: |
-          type=dhcp-client
+          type=static
+          ip-address={{ ipv4_address }}
+          netmask={{ ipv4_mask }}
+          default-gateway={{ ipv4_gateway  }}
+          ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
+          ipv6-default-gateway={{ ipv6_gateway }}
           hostname={{ hostname }}
           panorama-server={{ panorama01 }}
           panorama-server-2={{ panorama02 }}
@@ -45,11 +50,6 @@
           dns-secondary={{ dns_server02 }}
           auth-key={{ plugin_authkey }}
           plugin-op-commands=panorama-licensing-mode-on
-    #          ip-address={{ ipv4_address }}
-    #          netmask={{ ipv4_mask }}
-    #          default-gateway={{ ipv4_gateway  }}
-    #          ipv6-address={{ ipv6_address }}{{ ipv6_subnet }}
-    #          ipv6-default-gateway={{ ipv6_gateway }}
 
     - name: Create bootstrap ISO
       shell: "mkisofs -o {{ iso_location }} -iso-level 4 {{ bootstrap_location }}"
