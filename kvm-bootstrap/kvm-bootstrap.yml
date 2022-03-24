@@ -10,49 +10,6 @@
   vars:
     #ansible_python_interpreter: /Users/jholland/opt/miniconda3/bin/python3
 
-    # GIVEN VARIABLES
-    # FQDN/hostname for the firewall
-    hostname: "fw01"
-    # IPv6 address
-    #ipv6_address: "fd85:e493:71ca::5"
-    ipv6_address: "2600:1900:40c0:a4f1:0:5::"
-    # IPv6 gateway
-    #ipv6_gateway: "fd85:e493:71ca::1"
-    ipv6_gateway: "fe80::4001:aff:fe00:401"
-    # IPv6 subnet
-    ipv6_subnet: "/128"
-    # DNS server
-    #dns_server01: "2620:119:35::35"
-    #dns_server02: "2620:119:53::53"
-    dns_server01: "1.1.1.1"
-    dns_server02: "4.2.2.2"
-    # Group name for configuration membership
-    device_group: "train-dg"
-    template_stack: "train-ts"
-    # URL for configuration management
-    panorama01: "" # variable set in vars.yml
-    panorama02: "" # variable set in vars.yml
-
-    # EXTRA VARIABLES
-    # Auth for Panorama
-    vmauthkey: "" # variable set in vars.yml
-    plugin_authkey: "" # variable set in vars.yml
-    # PAN-OS Version
-    panos_version: "10.1.4"
-    # Non-utilised "dummy" IPv4 addressing
-    ipv4_address: "192.168.122.250"
-    ipv4_mask: "255.255.255.0"
-    ipv4_gateway: "192.168.122.1"
-    # Disk location of VM-Series base image
-    image_download_dir: "/home/jholland/vm-images"
-    image_download_location: "/home/jholland/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
-    image_runtime_location: "/home/jholland/PA-VM-KVM-{{ panos_version }}.qcow2"
-    # Disk location of bootstrap ISO for VM-Series
-    iso_location: "/home/jholland/bootstrap{{ hostname }}.iso"
-    # Getting the base image
-    image_url: "" # variable set in vars.yml
-    image_hash: "" # variable set in vars.yml
-
     # Directories for bootstrap ISO
     directories:
       - name: "config"
@@ -82,7 +39,6 @@
           dns-secondary={{ dns_server02 }}
           auth-key={{ plugin_authkey }}
           plugin-op-commands=panorama-licensing-mode-on
-    #          vm-auth-key={{ vmauthkey }}
     #          ip-address={{ ipv4_address }}
     #          netmask={{ ipv4_mask }}
     #          default-gateway={{ ipv4_gateway  }}
