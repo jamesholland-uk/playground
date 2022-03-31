@@ -1,3 +1,21 @@
+    ## # Reqs: pip install pycdlib
+    ## # ** Does not work, unable to create ISO with a file inside a folder. Also non-idempotent anyway **
+    ##
+    ## - name: Create bootstrap ISO
+    ##   community.general.iso_create:
+    ##     src_files:
+    ##       - bootstrap/config/init-cfg.txt
+    ##       - bootstrap/software
+    ##       - bootstrap/license
+    ##       - bootstrap/content
+    ##       - bootstrap/plugins
+    ##     dest_iso: {{ iso_location }}
+    ##     vol_ident: "BOOTSTRAP"
+    ##     interchange_level: 4
+    ##     joliet: 3
+    ##     rock_ridge: 1.09
+
+
 gcloud compute networks subnets update subnet-ext-v6 \
     --stack-type=IPV4_IPV6 \
     --ipv6-access-type=EXTERNAL \
@@ -109,3 +127,9 @@ sudo ip -6 route delete default
 sudo ip -6 route add default via fe80::4001:aff:fe00:401 dev ens4 metric 1
 sudo ip -6 route add default via fe80::5054:ff:fef8:ed4e dev ens4 metric 1
 
+18.185.248.70
+admin
+!kjhIo87N4!jsgh
+istrydom@paloaltonetworks.com
+
+VM auth key 110418914251830 generated. Expires at: 2023/03/23 08:59:56
