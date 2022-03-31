@@ -1,0 +1,49 @@
+---
+############################
+# GIVEN VARIABLES
+############################
+
+# FQDN/hostname for the firewall
+hostname: "firewall01"
+# IPv6 address
+ipv6_address: "2500:1900:40c0:1:1:5"
+# IPv6 gateway
+ipv6_gateway: "2500:1900:40c0:1:1:1"
+# IPv6 subnet
+ipv6_subnet: "/112"
+# DNS server
+dns_server01: "2620:119:35::35"
+dns_server02: "2620:119:53::53"
+# Group name for configuration membership
+device_group: "the-dg"
+template_stack: "the-ts"
+# URL for configuration management
+panorama01: "2500:1900:40c0:1:2:4"
+panorama02: "2500:1900:40c0:1:2:5"
+
+############################
+# EXTRA VARIABLES
+############################
+
+# Auth for Panorama
+#vmauthkey: "110418914251830"
+plugin_authkey: "abc123"
+# PAN-OS Version
+panos_version: "10.1.4"
+# Non-utilised "dummy" IPv4 addressing
+ipv4_address: "192.168.1.250"
+ipv4_mask: "255.255.255.0"
+ipv4_gateway: "192.168.1.1"
+# KVM bridge interface
+kvm_bridge: "virbr0"
+# Disk location of boostrap files
+bootstrap_location: "/tmp/bootstrap"
+# Disk location of VM-Series base image
+image_download_dir: "/tmp/vm-images"
+image_download_location: "/tmp/vm-images/PA-VM-KVM-{{ panos_version }}.qcow2"
+image_runtime_location: "/tmp/PA-VM-KVM-{{ panos_version }}.qcow2"
+# Disk location of bootstrap ISO for VM-Series
+iso_location: "/tmp/bootstrap{{ hostname }}.iso"
+# Getting the base VM-Series image
+image_url: "https://somewhere/PA-VM-KVM-10.1.4.qcow2"
+image_hash: sha256:123456789012345678901234567890123456789012345678901234567890

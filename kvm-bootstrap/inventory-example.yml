@@ -1,5 +1,0 @@
-all:
-  hosts:
-    kvmtarget:
-      ansible_host: "1.1.1.1"
-      ansible_users: "username"
