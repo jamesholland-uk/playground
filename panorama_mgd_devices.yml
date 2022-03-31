@@ -1,0 +1,81 @@
+---
+- hosts: '{{ target | default("azurerama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    # - name: Gather facts for device
+    #   paloaltonetworks.panos.panos_facts:
+    #     provider: "{{ device }}"
+
+    # - name: Display model, PAN-OS version, etc
+    #   debug:
+    #     msg:
+    #       - "Hostname: {{ ansible_facts['net_hostname'] }}"
+    #       - "Serial: {{ ansible_facts['net_serial'] }}"
+    #       - "Model: {{ ansible_facts['net_model'] }}"
+    #       - "Version: {{ ansible_facts['net_version'] }}"
+    #       - "Uptime: {{ ansible_facts['net_uptime'] }}"
+    #       - "HA Enabled: {{ ansible_facts['net_ha_enabled'] }}"
+    #       - "HA Type: {{ ansible_facts['net_ha_localmode'] }}"
+    #       - "HA Status: {{ ansible_facts['net_ha_localstate'] }}"
+    #       - "Multi-VSYS: {{ ansible_facts['net_multivsys'] }}"
+
+    - name: Collect managed devices
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        # Use either cmd as required, to get just connected devices, or all devices regardless of connection state
+        cmd: "<show><devices><connected/></devices></show>"
+        #cmd: "<show><devices><all/></devices></show>"
+        cmd_is_xml: true
+      register: cmd_output
+
+    # - name: Testing: Display all managed device information
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "{{ devices.stdout }}"
+
+    - name: Set JSON formatted fact for stdout response
+      ansible.builtin.set_fact:
+        cmd_output_json: "{{ (cmd_output['stdout'] | from_json)['response']['result'] }}"
+
+    - name: Single device parse
+      # This will give non-empty string if there is only one managed device in the list
+      ansible.builtin.set_fact:
+        device_single: "{{ cmd_output_json | community.general.json_query('devices.entry.serial') }}"
+
+    - name: Multiple device parse
+      # This will give non-empty string if there is multiple managed devices in the list
+      ansible.builtin.set_fact:
+        device_multiple: "{{ cmd_output_json | community.general.json_query('devices.entry[*].serial') }}"
+
+    # With the previous two tasks, then check which one is empty, and assign the non-empty response to the fact
+
+    - name: Check for single managed device in response
+      ansible.builtin.set_fact:
+        serial_number_list: "{{ device_single }}"
+      when: device_multiple == ""
+
+    - name: Check for multiple managed device in response
+      ansible.builtin.set_fact:
+        serial_number_list: "{{ device_multiple }}"
+      when: device_single == ""
+
+    # - name: Testing: Display serial number
+    #   ansible.builtin.debug:
+    #     msg: "{{ cmd_output_json | community.general.json_query('devices.entry[*].serial') }}"
+
+    # - name: Testing: Display serial numbers
+    #   ansible.builtin.debug:
+    #     msg: "{{ cmd_output_json | community.general.json_query('devices.entry.serial') }}"
+
+    - name: Display serial number(s)
+      ansible.builtin.debug:
+        msg:
+          - "{{ serial_number_list }}"
