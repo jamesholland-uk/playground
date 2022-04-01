@@ -25,6 +25,5 @@ credentials.json
 *init-cfg.txt*
 *cred*
 host_vars/*
-.terraform.lock.hcl
-*.terraform.lock.hcl
 *vars.yml
+*terraform.lock.hcl
