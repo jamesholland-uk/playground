@@ -1,0 +1,21 @@
+---
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+    interface: "ethernet1/4.3"
+    relay_ip: "8.7.8.7"
+
+  tasks:
+    - name: Create DHCP relay on interface
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: "{{ device }}"
+        cmd: "set"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='{{ interface }}']/relay"
+        element: "<ip><server><member>{{ relay_ip }}</member></server><enabled>yes</enabled></ip>"
