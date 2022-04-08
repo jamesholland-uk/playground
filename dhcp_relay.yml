@@ -9,8 +9,9 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-    interface: "ethernet1/4.3"
-    relay_ip: "8.7.8.7"
+    interface: "ethernet1/4"
+    relay_ip_1: "8.7.8.7"
+    relay_ip_2: "8.7.8.8"
 
   tasks:
     - name: Create DHCP relay on interface
@@ -18,4 +19,4 @@
         provider: "{{ device }}"
         cmd: "set"
         xpath: "/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='{{ interface }}']/relay"
-        element: "<ip><server><member>{{ relay_ip }}</member></server><enabled>yes</enabled></ip>"
+        element: "<ip><server><member>{{ relay_ip_1 }}</member><member>{{ relay_ip_2 }}</member></server><enabled>yes</enabled></ip>"

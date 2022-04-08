@@ -1,5 +1,5 @@
 ---
-- hosts: '{{ target | default("panorama") }}'
+- hosts: '{{ target | default("homelabrama") }}'
   connection: local
 
   vars:
@@ -8,7 +8,6 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
-      serial_number: "01234567890123456789"
 
   tasks:
     - name: Set dns for managed device
@@ -16,3 +15,4 @@
         provider: "{{ device }}"
         dns_primary_secondary: "1.1.1.1"
         dns_server_secondary: "1.1.1.2"
+        template: "home-tpl"
