@@ -27,3 +27,4 @@ credentials.json
 host_vars/*
 *vars.yml
 *terraform.lock.hcl
+cert.*
