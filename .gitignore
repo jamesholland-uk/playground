@@ -29,3 +29,4 @@ host_vars/*
 *terraform.lock.hcl
 cert.*
 twistcli
+gcp.json

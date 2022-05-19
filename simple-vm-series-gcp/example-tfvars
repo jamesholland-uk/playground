@@ -1,0 +1,37 @@
+
+name_prefix = "test-"
+
+project     = "my-sandbox"
+region      = "europe-west2"
+
+mgmt_cidr_range     = "10.236.64.0/28"
+outside_cidr_range  = "10.236.64.16/28"
+inside_cidr_range   = "10.236.64.32/28"
+
+vmseries = {
+  vmseries01 = {
+    name = "vmseries01"
+    zone = "europe-west2-b"
+    private_ips = {
+      mgmt    = "10.236.64.2"
+      outside = "10.236.64.20"
+      inside   = "10.236.64.35"
+    }
+  }
+}
+
+vmseries_common = {
+  vmseries_image = "vmseries-flex-byol-1014"
+}
+
+bootstrap_data = {
+    type = "dhcp-client"
+    vm-auth-key = "12345"
+    panorama-server = "1.2.3.4"
+    tplname = "tpl-stack"
+    dgname = "dg"
+}
+
+ssh_keys = "admin:ssh-rsa 12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde user@host"
+
+allowed_sources = ["0.0.0.0/0"]
