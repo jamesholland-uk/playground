@@ -1,8 +1,8 @@
 {
     "type": "service_account",
     "project_id": "my-sandbox",
-    "private_key_id": "abc123",
-    "private_key": "abc123",
+    "private_key_id": "redacted",
+    "private_key": "redacted",
     "client_email": "123456789-compute@developer.gserviceaccount.com",
     "client_id": "12345678890123456",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
