@@ -26,7 +26,7 @@ variable "common_vmseries_sku" {
   type        = string
 }
 
-variable "common_vmseries_version"{
+variable "common_vmseries_version" {
   description = "VM-Series PAN-OS version"
   type        = string
 }

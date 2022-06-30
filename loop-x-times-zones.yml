@@ -1,0 +1,22 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Add zones
+      panos_zone:
+        provider: "{{ provider }}"
+        zone: "{{ 'zone%03d' | format(item) }}"
+        vsys: "vsys2"
+      loop: "{{ range(1, 80, 1) | list }}"

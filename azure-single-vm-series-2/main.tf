@@ -19,12 +19,12 @@ module "vnet" {
   source  = "PaloAltoNetworks/vmseries-modules/azurerm//modules/vnet"
   version = "0.2.0"
 
-  virtual_network_name = "vnet-vmseries"
-  location             = var.location
-  resource_group_name  = azurerm_resource_group.this.name
-  address_space        = ["10.110.0.0/16"]
+  virtual_network_name    = "vnet-vmseries"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.this.name
+  address_space           = ["10.110.0.0/16"]
   network_security_groups = var.network_security_groups
-  route_tables = {}
+  route_tables            = {}
   subnets = {
     "subnet-mgmt" = {
       address_prefixes       = ["10.110.255.0/24"]
@@ -64,6 +64,9 @@ module "vmseries" {
   password            = random_password.this.result
   img_sku             = var.common_vmseries_sku
   img_version         = var.common_vmseries_version
+  # bootstrap_options   = var.bootstrap_params
+  bootstrap_storage_account = module.bootstrap.storage_account
+  bootstrap_share_name      = module.bootstrap.storage_share.name
   interfaces = [
     {
       name             = "myfw-mgmt"
@@ -82,7 +85,4 @@ module "vmseries" {
       enable_backend_pool = false
     },
   ]
-  bootstrap_options = var.bootstrap_params
-  # bootstrap_storage_account     = module.bootstrap.storage_account
-  # bootstrap_share_name          = module.bootstrap.storage_share.name
 }
