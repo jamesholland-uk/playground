@@ -26,6 +26,7 @@ resource "null_resource" "commit_panorama" {
     # This command is executed to perform a commit
     # This could be a single binary, a script, a curl to the PAN-OS API, or whatever is preferred
     # For Panorama, this could be a commit only, or a commit and push
+    # This example assumes a local Golang binary is present, which will reuse environment variables used by the PAN-OS provider
     command = "./commit"
   }
 
