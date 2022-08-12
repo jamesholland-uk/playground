@@ -37,6 +37,24 @@ def main():
         + "']/address"
     )
 
+    # Example XML:
+    #
+    # <response status="success" code="19">
+    #     <result total-count="1" count="1">
+    #         <address>
+    #             <entry name="test-address-1">
+    #                 <ip-netmask>1.1.1.1/32</ip-netmask>
+    #             </entry>
+    #             <entry name="test-address-2">
+    #                 <ip-netmask>2.2.2.2/32</ip-netmask>
+    #             </entry>
+    #             <entry name="manual-add-obj">
+    #                 <ip-netmask>4.4.4.4/32</ip-netmask>
+    #             </entry>
+    #         </address>
+    #     </result>
+    # </response>
+
     # Get candidate config's current value for the config
     xapi.get(xpath=address_objects_xpath)
     # Convert to XML Element
