@@ -1,0 +1,27 @@
+---
+- name: Playbook Example
+  hosts: '{{ target | default("ldn5020-1") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+    # Hardcoded variable values for testing
+    vsys_id: "vsys4"
+    vsys_name: "tester-vsys"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create VSYS
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: "{{ provider }}"
+        cmd: "set"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='{{ vsys_id }}']"
+
+        element: "<display-name>{{ vsys_name }}</display-name>"
