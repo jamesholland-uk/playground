@@ -30,3 +30,6 @@ host_vars/*
 cert.*
 twistcli
 gcp.json
+host_*.yml
+inventory.txt
+test.crt
