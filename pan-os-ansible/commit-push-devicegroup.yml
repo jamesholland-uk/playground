@@ -1,0 +1,26 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("homelabrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Commit and Push template configuration
+      # This module just covers push of config to managed devices, not commit of Panorama config from candidate to running
+      panos_commit_push:
+        provider: "{{ device }}"
+        style: "device group"
+        name: "{{ device_group }}"
+        include_template: no
+      register: results
+    - debug:
+        msg: "Job ID: {{ results.jobid }} finished"

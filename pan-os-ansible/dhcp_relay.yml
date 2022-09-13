@@ -1,0 +1,24 @@
+---
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Create DHCP relay on interface
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: "{{ device }}"
+        cmd: "set"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='{{ relay_interface }}']/relay"
+        element: "<ip><server><member>{{ relay_ip_1 }}</member><member>{{ relay_ip_2 }}</member></server><enabled>yes</enabled></ip>"
+
+    # - name: Delete DHCP relay on interface
+    #   paloaltonetworks.panos.panos_type_cmd:
+    #     provider: "{{ device }}"
+    #     cmd: "delete"
+    #     xpath: "/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='{{ relay_interface }}']/relay"

@@ -1,0 +1,24 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Check if PAN-OS appliance is ready
+      panos_check:
+        provider: "{{ provider }}"
+      register: result
+
+    - name: Display output
+      debug:
+        msg: "{{ result.msg }}"

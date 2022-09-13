@@ -1,0 +1,22 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Commit candidate configuration
+      panos_commit_firewall:
+        provider: "{{ device }}"
+      register: results
+    - debug:
+        msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results.details }}"

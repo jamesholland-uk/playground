@@ -1,0 +1,24 @@
+---
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Add static route to next VR
+      panos_static_route:
+        provider: "{{ device }}"
+        name: "Test route"
+        destination: "{{ subnet }}"
+        #interface: "None"
+        nexthop: "{{ next_vr }}"
+        nexthop_type: "next-vr"
+        virtual_router: "{{ vr }}"

@@ -1,0 +1,22 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("ldnrama") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create SNMP v2c Server profile
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: "{{ provider }}"
+        cmd: "set"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='{{ template_name }}']/config/shared/log-settings/snmptrap/entry[@name='{{ snmp_server_profile_name }}']"
+        element: "<version><v2c><server><entry name='{{ snmp_server_1_name }}'><manager>{{ snmp_server_1_ip }}</manager><community>{{ snmp_server_1_comm_string }}</community></entry><entry name='{{ snmp_server_2_name }}'><manager>{{ snmp_server_2_ip }}</manager><community>{{ snmp_server_2_comm_string }}</community></entry></server></v2c></version>"

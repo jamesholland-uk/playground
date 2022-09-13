@@ -1,0 +1,39 @@
+---
+- hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+    # Hardcoded example variables
+    vr: "default"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create rule 2
+      paloaltonetworks.panos.panos_bgp_policy_rule:
+        provider: "{{ device }}"
+        vr_name: "default"
+        name: "rule-002"
+        type: "import"
+        address_prefix:
+          - name: "10.2.2.0/24"
+        enable: true
+        action: "allow"
+
+    - name: Create rule
+      paloaltonetworks.panos.panos_bgp_policy_rule:
+        provider: "{{ device }}"
+        vr_name: "default"
+        name: "rule-001"
+        type: "import"
+        address_prefix:
+          - name: "10.1.1.0/24"
+        enable: true
+        action: "allow"

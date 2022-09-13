@@ -1,0 +1,77 @@
+---
+- hosts: '{{ target | default("ldn5020-1") }}'
+  connection: local
+
+  vars:
+    palo_provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Read CSV file
+      read_csv:
+        path: test.csv
+        key: hostname
+      register: srcr1hosts
+
+    - name: Display output
+      ansible.builtin.debug:
+        msg:
+          - "{{ srcr1hosts.dict | dict2items }}"
+
+    - name: Display output
+      ansible.builtin.debug:
+        msg:
+          - "{{ item.value.hostname }}"
+      with_items: "{{ srcr1hosts.dict | dict2items }}"
+
+    - name: Display output
+      ansible.builtin.debug:
+        msg:
+          - "{{ item.value.ip }}"
+      with_items: "{{ srcr1hosts.dict | dict2items }}"
+
+    - name: Create address objects
+      panos_address_object:
+        provider: "{{ palo_provider }}"
+        state: present
+        name: "{{ item.value.hostname }}"
+        value: "{{ item.value.ip}}"
+      with_items: "{{ srcr1hosts.dict | dict2items }}"
+
+    - set_fact:
+        hosts_in_group: "{{ srcr1hosts.dict | dict2items | map(attribute='key') | list }}"
+
+    - name: Display output
+      ansible.builtin.debug:
+        msg:
+          - "{{ hosts_in_group }}"
+
+    - name: Add address objects to address group
+      panos_address_group:
+        provider: "{{ palo_provider }}"
+        name: test_group
+        state: present
+        static_value: "{{ hosts_in_group }}"
+
+    - name: Add a rule
+      panos_security_rule:
+        provider: "{{ palo_provider }}"
+        state: "present"
+        rule_name: "Test rule"
+        source_zone: ["lab_trust"]
+        destination_zone: ["lab_untrust"]
+        source_ip: ["test_group"]
+        source_user: ["any"]
+        destination_ip: ["any"]
+        application: ["ssl"]
+        group_profile: "default"
+        log_setting: "test"
+        location: before
+        existing_rule: "test"
+        action: "allow"
