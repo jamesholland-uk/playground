@@ -20,6 +20,9 @@
         provider: "{{ provider }}"
       changed_when: false
       register: result
+      until: result is not failed and result.msg == 'Device is ready.'
+      retries: 100
+      delay: 15
 
     - name: Display output
       debug:

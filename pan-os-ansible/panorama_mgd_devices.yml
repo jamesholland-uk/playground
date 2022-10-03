@@ -1,5 +1,5 @@
 ---
-- hosts: '{{ target | default("azurerama") }}'
+- hosts: '{{ target | default("host_homelabrama") }}'
   connection: local
 
   vars:

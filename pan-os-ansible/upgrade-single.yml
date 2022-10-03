@@ -1,0 +1,36 @@
+---
+- hosts: '{{ target | default("homelabrama") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Install target PAN-OS version
+      paloaltonetworks.panos.panos_software:
+        provider: '{{ device }}'
+        version: '{{ version }}'
+        download: true
+        install: true
+        restart: true
+
+    - name: Pause for restart
+      pause:
+        seconds: 30
+
+    - name: Check if PAN-OS appliance is ready
+      paloaltonetworks.panos.panos_check:
+        provider: "{{ device }}"
+      changed_when: false
+      register: result
+      until: result is not failed and result.msg == 'Device is ready.'
+      retries: 100
+      delay: 15
+
+    - name: Display output
+      debug:
+        msg: "{{ result.msg }}"

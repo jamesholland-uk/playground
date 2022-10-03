@@ -22,7 +22,7 @@
       register: auth
 
     - debug:
-        msg: 'API key for {{ device.username}} is {{ auth.api_key }}'
+        msg: 'API key for {{ device.username }} is {{ auth.api_key }}'
 
     - name: Generate VM Auth Key
       paloaltonetworks.panos.panos_vm_auth_key:
