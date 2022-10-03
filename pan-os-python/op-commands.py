@@ -19,8 +19,16 @@ def main():
     panorama = Panorama(HOSTNAME, USERNAME, PASSWORD)
 
     # Test system info
-    sysinfo_response = panorama.op("show system info", xml=True)
-    print(sysinfo_response)
+    sysinfo_response_xml = panorama.op("show system info", xml=True)
+    print(sysinfo_response_xml)
+
+    # Move a Device Group to a new parent Device Group
+    # resp = panorama.op(
+    #     '<request><move-dg><entry name="new-dg"><new-parent-dg>home-dg</new-parent-dg></entry></move-dg></request>',
+    #     xml=True,
+    #     cmd_xml=False,
+    # )
+    # print(resp)
 
 
 if __name__ == "__main__":
