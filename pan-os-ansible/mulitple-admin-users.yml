@@ -23,21 +23,21 @@
         admin_password: "{{ item.pass }}"
         superuser: true
       with_items:
-        - { user: "student01", pass: "Ignite2020!" }
-        - { user: "student02", pass: "Ignite2020!" }
-        - { user: "student03", pass: "Ignite2020!" }
-        - { user: "student04", pass: "Ignite2020!" }
-        - { user: "student05", pass: "Ignite2020!" }
-        - { user: "student06", pass: "Ignite2020!" }
-        - { user: "student07", pass: "Ignite2020!" }
-        - { user: "student08", pass: "Ignite2020!" }
-        - { user: "student09", pass: "Ignite2020!" }
-        - { user: "student10", pass: "Ignite2020!" }
-        - { user: "student11", pass: "Ignite2020!" }
-        - { user: "student12", pass: "Ignite2020!" }
-        - { user: "student13", pass: "Ignite2020!" }
-        - { user: "student14", pass: "Ignite2020!" }
-        - { user: "student15", pass: "Ignite2020!" }
+        - {user: "student01", pass: "Ignite2020!"}
+        - {user: "student02", pass: "Ignite2020!"}
+        - {user: "student03", pass: "Ignite2020!"}
+        - {user: "student04", pass: "Ignite2020!"}
+        - {user: "student05", pass: "Ignite2020!"}
+        - {user: "student06", pass: "Ignite2020!"}
+        - {user: "student07", pass: "Ignite2020!"}
+        - {user: "student08", pass: "Ignite2020!"}
+        - {user: "student09", pass: "Ignite2020!"}
+        - {user: "student10", pass: "Ignite2020!"}
+        - {user: "student11", pass: "Ignite2020!"}
+        - {user: "student12", pass: "Ignite2020!"}
+        - {user: "student13", pass: "Ignite2020!"}
+        - {user: "student14", pass: "Ignite2020!"}
+        - {user: "student15", pass: "Ignite2020!"}
 
     - name: Commit configuration
       paloaltonetworks.panos.panos_commit_panorama:
