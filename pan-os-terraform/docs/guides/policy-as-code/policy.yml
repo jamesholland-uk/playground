@@ -1,0 +1,58 @@
+security_policies:
+  - name: "Allow DNS"
+    tags:
+      - infra
+    source_zones:
+      - app
+    source_addresses:
+      - 10.0.0.0/8
+      - 192.168.0.0/16
+    destination_zones:
+      - dmz
+    destination_addresses:
+      - 8.8.8.8
+    applications:
+      - dns
+    action: "allow"
+
+  - name: "Allow Internet access for Users"
+    tags:
+      - internet
+    source_zones:
+      - users
+    source_addresses:
+      - 192.168.0.0/16
+    destination_zones:
+      - internet
+    applications:
+      - ssl
+      - web-browsing
+    action: "allow"
+
+  - name: "Access to Mgmt Network - Allow Infra Team"
+    tags:
+      - infra
+    source_zones:
+      - users
+    source_users:
+      - "domain/infra-team"
+    source_addresses:
+      - 192.168.0.0/16
+    destination_zones:
+      - mgmt
+    applications:
+      - any
+    action: "allow"
+
+  - name: "Access to Mgmt Network - Cleanup"
+    tags:
+      - infra
+    source_zones:
+      - users
+    source_addresses:
+      - 192.168.0.0/16
+    destination_zones:
+      - mgmt
+    applications:
+      - any
+    action: "deny"
