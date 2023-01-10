@@ -26,5 +26,3 @@
         provider: "{{ provider }}"
         xpath: '/config/devices/entry[@name="localhost.localdomain"]/vsys'
         element: '<entry name="{{ vsys_id_2 }}"><display-name>{{ vsys_name_2 }}</display-name></entry>'
-
-        

@@ -10,25 +10,27 @@
 
   vars:
     device:
-      ip_address: '{{ ip_address }}'
-      username: '{{ username | default(omit) }}'
-      password: '{{ password | default(omit) }}'
-      api_key: '{{ api_key | default(omit) }}'
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
 
   tasks:
     - name: Generate API Key
       paloaltonetworks.panos.panos_api_key:
-        provider: '{{ device }}'
+        provider: "{{ device }}"
       register: auth
 
-    - debug:
-        msg: 'API key for {{ device.username }} is {{ auth.api_key }}'
+    - name: Send output
+      ansible.builtin.debug:
+        msg: "API key for {{ device.username }} is {{ auth.api_key }}"
 
     - name: Generate VM Auth Key
       paloaltonetworks.panos.panos_vm_auth_key:
-        provider: '{{ device }}'
+        provider: "{{ device }}"
         hours: 8
       register: res
 
-    - debug:
-        msg: 'Auth key {{ res.authkey }} expires at {{ res.expires }}'
+    - name: Send more output
+      ansible.builtin.debug:
+        msg: "Auth key {{ res.authkey }} expires at {{ res.expires }}"

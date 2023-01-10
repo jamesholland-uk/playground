@@ -34,7 +34,7 @@
         from_value: ["{{ from_zone }}"]
         destination_addresses: ["{{ dest_one }}", "{{ dest_two }}"]
         action: "forward"
-        forward_egress_interface: "{{ egress_int}}"
+        forward_egress_interface: "{{ egress_int }}"
         forward_next_hop_type: "ip-address"
         forward_monitor_profile: "{{ monitor_profile }}"
         forward_monitor_ip_address: "{{ monitor_ip }}"

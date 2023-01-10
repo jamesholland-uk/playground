@@ -5,8 +5,9 @@
 
   tasks:
     - name: Debug Python packages installed
-      ansible.builtin.shell: pip freeze
+      ansible.builtin.command: pip freeze
       register: packages
+      changed_when: packages != 0
 
     - name: Display packages
       ansible.builtin.debug:

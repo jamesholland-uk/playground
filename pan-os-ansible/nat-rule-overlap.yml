@@ -28,9 +28,9 @@
         snat_interface: "ethernet1/1"
         dnat_address: "10.0.1.101"
         dnat_port: "22"
-        #dnat_dynamic_address: "1.1.1.1"
-        #dnat_dynamic_port: "80"
-        #dnat_dynamic_distribution: "Round Robin"
+        # dnat_dynamic_address: "1.1.1.1"
+        # dnat_dynamic_port: "80"
+        # dnat_dynamic_distribution: "Round Robin"
     - name: Create dynamic NAT rule on the firewall 2
       panos_nat_rule:
         provider: "{{ palo_provider }}"
@@ -44,6 +44,6 @@
         snat_interface: "ethernet1/1"
         dnat_address: "10.0.1.101"
         dnat_port: "22"
-        #dnat_dynamic_address: "1.1.1.1"
-        #dnat_dynamic_port: "80"
-        #dnat_dynamic_distribution: "Round Robin"
+        # dnat_dynamic_address: "1.1.1.1"
+        # dnat_dynamic_port: "80"
+        # dnat_dynamic_distribution: "Round Robin"

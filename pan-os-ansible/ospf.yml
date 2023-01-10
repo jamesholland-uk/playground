@@ -21,4 +21,27 @@
       paloaltonetworks.panos.panos_config_element:
         provider: "{{ device }}"
         xpath: "/config/devices/entry[@name='localhost.localdomain']/network/virtual-router/entry[@name='{{ virtual_router_name }}']/protocol"
-        element: "<ospf><enable>yes</enable><area><entry name='{{ ospf_area }}'><type><normal/></type><interface><entry name='{{ network_interface }}'><bfd><profile>Inherit-vr-global-setting</profile></bfd><enable>yes</enable><passive>no</passive><gr-delay>10</gr-delay><metric>10</metric><priority>1</priority><hello-interval>10</hello-interval><dead-counts>4</dead-counts><retransmit-interval>5</retransmit-interval><transit-delay>1</transit-delay><link-type><broadcast/></link-type></entry></interface></entry></area><router-id>{{ router_id }}</router-id></ospf>"
+        element: >
+          "<ospf>
+          <enable>yes</enable>
+          <area>
+          <entry name='{{ ospf_area }}'>
+          <type>
+          <normal/>
+          </type>
+          <interface>
+          <entry name='{{ network_interface }}'>
+          <bfd><profile>Inherit-vr-global-setting</profile></bfd>
+          <enable>yes</enable>
+          <passive>no</passive>
+          <gr-delay>10</gr-delay>
+          <metric>10</metric>
+          <priority>1</priority>
+          <hello-interval>10</hello-interval>
+          <dead-counts>4</dead-counts>
+          <retransmit-interval>5</retransmit-interval>
+          <transit-delay>1</transit-delay>
+          <link-type><broadcast/></link-type>
+          </entry></interface></entry>
+          </area><router-id>{{ router_id }}</router-id>
+          </ospf>"

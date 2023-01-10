@@ -32,7 +32,7 @@
         provider: "{{ device }}"
         # Use either cmd as required, to get just connected devices, or all devices regardless of connection state
         cmd: "<show><devices><connected/></devices></show>"
-        #cmd: "<show><devices><all/></devices></show>"
+        # cmd: "<show><devices><all/></devices></show>"
         cmd_is_xml: true
       register: cmd_output
 

@@ -23,7 +23,17 @@
     - name: Install content - op as XML
       panos_op:
         provider: "{{ provider }}"
-        cmd: "<request><content><upgrade><install><skip-content-validity-check>yes</skip-content-validity-check><file>panupv2-all-apps-8480-7019</file></install></upgrade></content></request>"
+        cmd: >
+          "<request>
+          <content>
+          <upgrade>
+          <install>
+          <skip-content-validity-check>yes</skip-content-validity-check>
+          <file>panupv2-all-apps-8480-7019</file>
+          </install>
+          </upgrade>
+          </content>
+          </request>"
         cmd_is_xml: true
     # Ideally a check here to wait for content to install, and check it was sucessful
     - name: Import software image into PAN-OS
@@ -36,17 +46,3 @@
         provider: "{{ provider }}"
         cmd: "request system software install version 9.1.1"
     # Ideally a check here to wait for install, make sure it was successful, then reboot
-
-    #TRASH
-    # - name: Update content
-    #   panos_dynamic_updates:
-    #     provider: '{{ provider }}'
-    # - name: Install content - op
-    #   panos_op:
-    #     provider: '{{ provider }}'
-    #     cmd: 'request content upgrade install skip-content-validity-check yes file panupv2-all-contents-8334-6362'
-    # - name: Install software
-    #   panos_software:
-    #     provider: '{{ provider }}'
-    #     version: '9.1.1'
-    #     restart: true

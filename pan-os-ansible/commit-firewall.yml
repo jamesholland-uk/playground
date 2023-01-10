@@ -18,5 +18,6 @@
       panos_commit_firewall:
         provider: "{{ device }}"
       register: results
-    - debug:
+    - name: Output results
+      ansible.builtin.debug:
         msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results.details }}"

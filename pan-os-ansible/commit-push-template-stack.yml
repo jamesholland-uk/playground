@@ -20,7 +20,8 @@
         provider: "{{ device }}"
         style: "template stack"
         name: "{{ template_stack }}"
-        #force_template_values: true
+        # force_template_values: true
       register: results
-    - debug:
+    - name: Output
+      ansible.builtin.debug:
         msg: "Job ID: {{ results.jobid }} finished"

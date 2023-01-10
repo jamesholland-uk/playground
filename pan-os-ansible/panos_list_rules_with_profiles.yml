@@ -38,7 +38,8 @@
         rulebase: rulebase
       register: sec_rules
 
-    - debug:
+    - name: Output
+      ansible.builtin.debug:
         msg: "{{ sec_rules.rule_details }}"
 
     # - name: Gather facts for device

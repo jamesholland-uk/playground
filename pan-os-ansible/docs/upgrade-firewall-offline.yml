@@ -27,7 +27,17 @@
     - name: Start content installation
       paloaltonetworks.panos.panos_op:
         provider: "{{ device }}"
-        cmd: "<request><content><upgrade><install><skip-content-validity-check>yes</skip-content-validity-check><file>{{ content_file }}</file></install></upgrade></content></request>"
+        cmd: >
+          "<request>
+          <content>
+          <upgrade>
+          <install>
+          <skip-content-validity-check>yes</skip-content-validity-check>
+          <file>{{ content_file }}</file>
+          </install>
+          </upgrade>
+          </content>
+          </request>"
         cmd_is_xml: true
       register: contentinstall
 

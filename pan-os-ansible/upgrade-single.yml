@@ -19,7 +19,7 @@
         restart: true
 
     - name: Pause for restart
-      pause:
+      ansible.builtin.pause:
         seconds: 30
 
     - name: Check if PAN-OS appliance is ready
@@ -32,5 +32,5 @@
       delay: 15
 
     - name: Display output
-      debug:
+      ansible.builtin.debug:
         msg: "{{ result.msg }}"

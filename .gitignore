@@ -34,3 +34,6 @@ host_*.yml
 inventory.txt
 test.crt
 python/__pycache__/netmiko.cpython-310.pyc
+firewall.yml
+exampleconfig.xml
+auth*.json

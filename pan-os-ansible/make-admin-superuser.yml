@@ -30,7 +30,8 @@
         content: text
       register: therole
 
-    - debug:
+    - name: Output testing
+      ansible.builtin.debug:
         msg: "{{ therole.matches[0].profile }}"
 
     - name: Change administrator to superuser
@@ -44,5 +45,6 @@
         provider: "{{ device }}"
       register: results
 
-    - debug:
+    - name: Output results
+      ansible.builtin.debug:
         msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results.details }}"

@@ -37,7 +37,7 @@
         gather_subset: ["vr"]
 
     - name: Display model, PAN-OS version
-      debug:
+      ansible.builtin.debug:
         msg:
           "FACTS: {{ ansible_facts }}"
           # - "Hostname: {{ ansible_facts['net_hostname'] }}"

@@ -20,7 +20,8 @@
         provider: "{{ device }}"
         style: "device group"
         name: "{{ device_group }}"
-        include_template: no
+        include_template: false
       register: results
-    - debug:
+    - name: Output
+      ansible.builtin.debug:
         msg: "Job ID: {{ results.jobid }} finished"

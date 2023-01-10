@@ -78,11 +78,15 @@
       lifetime_seconds: "28800"
 
   tasks:
-    - command: "{{ ansible_python_interpreter | default('/usr/bin/python') }} -c 'import {{ module }}; print({{ module }}.__version__)'"
+    - name: Checking modules etc
+      ansible.builtin.command: "{{ ansible_python_interpreter | default('/usr/bin/python') }} -c 'import {{ module }}; print({{ module }}.__version__)'"
       vars:
         module: boto3
       register: test
-    - debug:
+      changed_when: my_output != 0
+
+    - name: Check stdout
+      ansible.builtin.debug:
         var: test.stdout
 
     - name: Get VPN connection info
@@ -90,11 +94,12 @@
         vpn_connection_ids: "{{ vpn_id }}"
       register: vpn_conn_facts
 
-    - debug:
+    - name: Check VPN facts
+      ansible.builtin.debug:
         var: vpn_conn_facts
 
     - name: set_fact
-      set_fact:
+      ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | parse_xml('spec/aws_vpn_spec.yml') }}"
 
     - name: Create IKE crypto profiles
@@ -106,7 +111,7 @@
         authentication: "{{ ike_settings.authentication }}"
         encryption: "{{ ike_settings.encryption }}"
         lifetime_sec: "{{ ike_settings.lifetime_sec }}"
-        commit: False
+        commit: false
       with_items:
         - "{{ vpn_id }}-0"
         - "{{ vpn_id }}-1"
@@ -126,7 +131,7 @@
         ikev1_exchange_mode: "main"
         crypto_profile_name: "{{ item.crypto_profile_name }}"
         enable_passive_mode: "no"
-        commit: False
+        commit: false
       with_items:
         - name: "ike-{{ vpn_id }}-0"
           peer_ip: "{{ parsed.aws_vpn[0].peer_1_outside_ip }}"
@@ -146,7 +151,7 @@
         authentication: "{{ ipsec_settings.authentication }}"
         encryption: "{{ ipsec_settings.encryption }}"
         lifetime_seconds: "{{ ipsec_settings.lifetime_seconds }}"
-        commit: False
+        commit: false
       with_items:
         - "ipsec-{{ vpn_id }}-0"
         - "ipsec-{{ vpn_id }}-1"
@@ -161,7 +166,7 @@
         mtu: "{{ item.mtu }}"
         zone_name: "{{ item.zone_name }}"
         vr_name: "{{ item.vr_name }}"
-        commit: False
+        commit: false
       with_items:
         - if_name: "{{ tunnel_if_1 }}"
           ip: "{{ parsed.aws_vpn[0].tunnel_if_1_ip }}"
@@ -185,7 +190,7 @@
         enable_tunnel_monitor: "yes"
         tunnel_monitor_dest_ip: "{{ item.tunnel_monitor_dest_ip }}"
         tunnel_monitor_profile: "default"
-        commit: False
+        commit: false
       with_items:
         - name: "ipsec-tunnel-1"
           ike_gtw_name: "ike-{{ vpn_id }}-0"
@@ -205,8 +210,8 @@
         vr_name: "{{ vr_name }}"
         local_as: "{{ local_as }}"
         router_id: "{{ router_id }}"
-        install_route: yes
-        commit: False
+        install_route: true
+        commit: false
 
     - name: Create BGP peer group
       paloaltonetworks.panos.panos_bgp_peer_group:
@@ -214,7 +219,7 @@
         template: "{{ template }}"
         name: "{{ peer_group }}"
         vr_name: "{{ vr_name }}"
-        commit: False
+        commit: false
 
     - name: Create BGP peers
       paloaltonetworks.panos.panos_bgp_peer:
@@ -228,7 +233,7 @@
         peer_as: "{{ parsed.aws_vpn[0].peer_as }}"
         connection_hold_time: "30"
         connection_keep_alive_interval: "10"
-        commit: False
+        commit: false
       with_items:
         - name: "amazon-{{ vpn_id }}-0"
           local_interface: "{{ tunnel_if_1 }}"
@@ -249,7 +254,7 @@
         filter_type: "connect"
         filter_interface: "{{ trust_interface }}"
         action: "redist"
-        commit: False
+        commit: false
 
     - name: Add BGP redistribution
       paloaltonetworks.panos.panos_bgp_redistribute:
@@ -257,7 +262,7 @@
         template: "{{ template }}"
         name: "{{ redist_profile }}"
         vr_name: "{{ vr_name }}"
-        commit: False
+        commit: false
 
     - name: Commit configuration
       paloaltonetworks.panos.panos_commit_panorama:
