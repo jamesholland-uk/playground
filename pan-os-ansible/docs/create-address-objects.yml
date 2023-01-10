@@ -1,0 +1,28 @@
+---
+- name: Create address objects
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create source address object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        name: "source-server"
+        value: "192.168.120.8/32"
+        description: "Address object 1 from Ansible"
+
+    - name: Create destination address object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        name: "destination-server"
+        value: "192.168.80.5/32"
+        description: "Address object 2 from Ansible"

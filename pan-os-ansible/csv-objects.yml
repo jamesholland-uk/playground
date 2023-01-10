@@ -1,9 +1,9 @@
 ---
-- hosts: '{{ target | default("ldn5020-1") }}'
+- hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:
-    palo_provider:
+    device:
       ip_address: "{{ ip_address }}"
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
@@ -37,14 +37,15 @@
       with_items: "{{ srcr1hosts.dict | dict2items }}"
 
     - name: Create address objects
-      panos_address_object:
-        provider: "{{ palo_provider }}"
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
         state: present
         name: "{{ item.value.hostname }}"
-        value: "{{ item.value.ip}}"
+        value: "{{ item.value.ip }}"
       with_items: "{{ srcr1hosts.dict | dict2items }}"
 
-    - set_fact:
+    - name: Create list
+      ansible.builtin.set_fact:
         hosts_in_group: "{{ srcr1hosts.dict | dict2items | map(attribute='key') | list }}"
 
     - name: Display output
@@ -54,24 +55,20 @@
 
     - name: Add address objects to address group
       panos_address_group:
-        provider: "{{ palo_provider }}"
+        provider: "{{ device }}"
         name: test_group
         state: present
         static_value: "{{ hosts_in_group }}"
 
     - name: Add a rule
       panos_security_rule:
-        provider: "{{ palo_provider }}"
+        provider: "{{ device }}"
         state: "present"
         rule_name: "Test rule"
-        source_zone: ["lab_trust"]
-        destination_zone: ["lab_untrust"]
+        source_zone: ["any"]
+        destination_zone: ["any"]
         source_ip: ["test_group"]
         source_user: ["any"]
         destination_ip: ["any"]
         application: ["ssl"]
-        group_profile: "default"
-        log_setting: "test"
-        location: before
-        existing_rule: "test"
         action: "allow"

@@ -1,4 +1,4 @@
-- hosts: '{{ target | default("homelabrama") }}'
+- hosts: '{{ target | default("host_homelabrama") }}'
   connection: local
 
   vars:
@@ -9,28 +9,59 @@
       api_key: "{{ api_key | default(omit) }}"
 
   tasks:
-    - name: Create first security rule
-      paloaltonetworks.panos.panos_security_rule:
-        provider: "{{ device }}"
-        device_group: "poc-dg"
-        rule_name: "SSH Inbound"
-        source_zone: ["outside"]
-        destination_zone: ["inside"]
-        source_ip: ["any"]
-        destination_ip: ["any"]
-        application: ["ssh"]
-        service: ["application-default"]
-        action: "allow"
+    # - name: Create first security rule
+    #   paloaltonetworks.panos.panos_security_rule:
+    #     provider: "{{ device }}"
+    #     device_group: "poc-dg"
+    #     rule_name: "SSH Inbound"
+    #     source_zone: ["outside"]
+    #     destination_zone: ["inside"]
+    #     source_ip: ["any"]
+    #     destination_ip: ["any"]
+    #     application: ["ssh"]
+    #     service: ["application-default"]
+    #     action: "allow"
 
-    - name: Create second security rule
+    # - name: Create second security rule
+    #   paloaltonetworks.panos.panos_security_rule:
+    #     provider: "{{ device }}"
+    #     device_group: "poc-dg"
+    #     rule_name: "SSH Outbound"
+    #     source_zone: ["inside"]
+    #     destination_zone: ["outside"]
+    #     source_ip: ["any"]
+    #     destination_ip: ["any"]
+    #     application: ["ssh"]
+    #     service: ["application-default"]
+    #     action: "allow"
+
+    # - name: Create shared pre-rule
+    #   paloaltonetworks.panos.panos_security_rule:
+    #     provider: "{{ device }}"
+    #     rule_name: "Rule by ansible-admin"
+    #     source_zone: ["any"]
+    #     destination_zone: ["any"]
+    #     source_ip: ["any"]
+    #     destination_ip: ["any"]
+    #     application: ["dns"]
+    #     service: ["application-default"]
+    #     action: "allow"
+    #     log_start: true
+    #     log_end: true
+    #     log_setting: "default"
+
+    - name: Create DG pre-rule
       paloaltonetworks.panos.panos_security_rule:
         provider: "{{ device }}"
         device_group: "poc-dg"
-        rule_name: "SSH Outbound"
-        source_zone: ["inside"]
-        destination_zone: ["outside"]
+        rule_name: "Rule by ansible-admin more2"
+        source_zone: ["any"]
+        destination_zone: ["any"]
         source_ip: ["any"]
         destination_ip: ["any"]
-        application: ["ssh"]
+        application: ["dns"]
         service: ["application-default"]
         action: "allow"
+        log_start: true
+        log_end: true
+        log_setting: "default"

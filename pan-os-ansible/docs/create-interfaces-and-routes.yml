@@ -1,0 +1,62 @@
+---
+- name: Configure interfaces and create static routes
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Configure Internet-facing interface
+      paloaltonetworks.panos.panos_interface:
+        provider: "{{ device }}"
+        if_name: "ethernet1/1"
+        vr_name: "new-vrouter"
+        mode: "layer3"
+        ip: ["1.2.3.5/24"]
+        enable_dhcp: false
+        zone_name: "internet"
+
+    - name: Configure DMZ-facing interface
+      paloaltonetworks.panos.panos_interface:
+        provider: "{{ device }}"
+        if_name: "ethernet1/2"
+        vr_name: "new-vrouter"
+        mode: "layer3"
+        ip: ["172.16.18.1/24"]
+        enable_dhcp: false
+        zone_name: "dmz"
+
+    - name: Configure user-facing interface
+      paloaltonetworks.panos.panos_interface:
+        provider: "{{ device }}"
+        if_name: "ethernet1/3"
+        vr_name: "new-vrouter"
+        mode: "layer3"
+        ip: ["192.168.1.1/24"]
+        enable_dhcp: false
+        zone_name: "users"
+
+    - name: Create default route
+      paloaltonetworks.panos.panos_static_route:
+        provider: "{{ device }}"
+        name: "Default route"
+        virtual_router: "new-vrouter"
+        destination: "0.0.0.0/0"
+        interface: "ethernet1/1"
+        nexthop: "1.2.3.1"
+
+    - name: Create route for internal subnet
+      paloaltonetworks.panos.panos_static_route:
+        provider: "{{ device }}"
+        name: "Intenal subnet"
+        virtual_router: "new-vrouter"
+        destination: "192.168.10.0/24"
+        interface: "ethernet1/3"
+        nexthop: "192.168.1.254"

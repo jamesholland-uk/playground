@@ -1,0 +1,24 @@
+---
+- name: Test Playbook
+  hosts: '{{ target | default("firewall") }}'
+  gather_facts: false
+  connection: local
+
+  collections:
+    - paloaltonetworks.panos
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Get system info
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        cmd: "show system info"
+      register: "sysinfo"
+
+    - name: Show system info
+      ansible.builtin.debug:
+        msg: "{{ sysinfo }}"

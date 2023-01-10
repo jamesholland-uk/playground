@@ -1,0 +1,26 @@
+---
+- name: Gather rules
+  hosts: '{{ target | default("host_vm-series-a") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Get all tags
+      paloaltonetworks.panos.panos_tag_object:
+        provider: "{{ device }}"
+        gathered_filter: "*"
+        state: gathered
+      register: tags
+
+    - name: Output
+      ansible.builtin.debug:
+        msg: "{{ tags }}"

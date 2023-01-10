@@ -1,15 +1,14 @@
 ---
-- name: Palo Alto Playbook
-  hosts: '{{ target | default("host_labfw") }}'
+- name: Gather system info
+  hosts: "firewall"
   connection: local
   gather_facts: false
 
   vars:
-    provider:
+    device:
       ip_address: "{{ ip_address }}"
-      username: "{{ username | default(omit) }}"
-      password: "{{ password | default(omit) }}"
-      api_key: "{{ api_key | default(omit) }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
 
   collections:
     - paloaltonetworks.panos
@@ -17,7 +16,7 @@
   tasks:
     - name: Check if PAN-OS appliance is ready and wait until it is
       paloaltonetworks.panos.panos_check:
-        provider: "{{ provider }}"
+        provider: "{{ device }}"
       changed_when: false
       register: result
       until: result is not failed and result.msg == 'Device is ready.'

@@ -1,0 +1,22 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("ldnrama") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Define SNMP settings on firewall
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: "{{ provider }}"
+        cmd: "set"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system"
+        element: "<snmp-setting><access-setting><version><v2c><snmp-community-string>{{ community_string }}</snmp-community-string></v2c></version></access-setting><snmp-system><location>{{ location }}</location><contact>{{ contact }}</contact><send-event-specific-traps>yes</send-event-specific-traps></snmp-system></snmp-setting>"

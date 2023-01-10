@@ -19,5 +19,6 @@
       panos_commit_panorama:
         provider: "{{ device }}"
       register: results
-    - debug:
+    - name: Print output
+      ansible.builtin.debug:
         msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results.details }}"

@@ -1,0 +1,30 @@
+---
+- name: Create service objects
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create service object 'tcp-12345'
+      paloaltonetworks.panos.panos_service_object:
+        provider: "{{ device }}"
+        name: "tcp-12345"
+        protocol: "tcp"
+        destination_port: "12345"
+        description: "Service object 1 from Ansible"
+
+    - name: Create service object 'tcp-9876'
+      paloaltonetworks.panos.panos_service_object:
+        provider: "{{ device }}"
+        name: "tcp-9876"
+        protocol: "tcp"
+        destination_port: "9876"
+        description: "Service object 2 from Ansible"

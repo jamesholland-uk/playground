@@ -1,0 +1,42 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("vm-series-a") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Get matching security rule(s)
+      panos_security_rule:
+        provider: "{{ provider }}"
+        state: "gathered"
+        gathered_filter: "rule_name contains 1"
+      register: ans
+
+    # - debug:
+    #     msg: '{{ ans }}'
+
+    # - debug:
+    #     msg: '{{ ans.gathered.0.rule_name }}'
+
+    - name: modify
+      panos_security_rule:
+        provider: "{{ provider }}"
+        state: "merged"
+        rule_name: "{{ item.rule_name }}"
+        description: "ansible test"
+        service: "{{ item.service }}"
+        application: "{{ item.application }}"
+        category: "{{ item.category }}"
+        # Needs all fields defined as:
+        #   field: '{{ item.field }}'
+        # Otherwise default "any" value is sent for zones, addresses, app, category, etc
+      loop: "{{ ans.gathered }}"

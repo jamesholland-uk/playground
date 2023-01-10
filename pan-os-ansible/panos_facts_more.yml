@@ -16,7 +16,8 @@
 #
 #   $ ansible-playbook -i inventory panos_facts_more.yml
 
-- hosts: '{{ target | default("firewall") }}'
+- name: Using panos_facts
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:
@@ -25,6 +26,9 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
 
   tasks:
     - name: Get security rules (facts)
@@ -38,16 +42,16 @@
         provider: "{{ device }}"
 
     - name: Display security rules
-      debug:
+      ansible.builtin.debug:
         msg:
           - "{{ sec_rules }}"
 
     - name: Display interfaces
-      debug:
+      ansible.builtin.debug:
         msg:
           - "{{ ansible_facts['net_interfaces'] }}"
 
     - name: Display routes
-      debug:
+      ansible.builtin.debug:
         msg:
           - "{{ ansible_facts['net_routing_table'] }}"

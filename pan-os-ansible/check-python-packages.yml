@@ -1,0 +1,13 @@
+---
+- name: Check Python packages
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  tasks:
+    - name: Debug Python packages installed
+      ansible.builtin.shell: pip freeze
+      register: packages
+
+    - name: Display packages
+      ansible.builtin.debug:
+        msg: "{{ packages.stdout_lines }}"

@@ -1,0 +1,40 @@
+---
+- name: Create VR and Zones
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create new Virtual Router
+      paloaltonetworks.panos.panos_virtual_router:
+        provider: "{{ device }}"
+        name: "new-vrouter"
+
+    - name: Create zone for Internet
+      paloaltonetworks.panos.panos_zone:
+        provider: "{{ device }}"
+        zone: "internet"
+        mode: "layer3"
+        enable_userid: false
+
+    - name: Create zone for DMZ
+      paloaltonetworks.panos.panos_zone:
+        provider: "{{ device }}"
+        zone: "dmz"
+        mode: "layer3"
+        enable_userid: false
+
+    - name: Create zone for Users
+      paloaltonetworks.panos.panos_zone:
+        provider: "{{ device }}"
+        zone: "users"
+        mode: "layer3"
+        enable_userid: true

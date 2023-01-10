@@ -1,0 +1,30 @@
+---
+- name: Import and load a configuration file
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+    cfg_file: "exampleconfig.xml"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Import configuration
+      paloaltonetworks.panos.panos_import:
+        provider: "{{ device }}"
+        file: "{{ cfg_file }}"
+        category: "configuration"
+      register: result
+
+    - name: Load configuration
+      paloaltonetworks.panos.panos_loadcfg:
+        ip_address: "{{ device.ip_address }}"
+        username: "{{ device.username }}"
+        password: "{{ device.password }}"
+        file: "{{ result.filename }}"

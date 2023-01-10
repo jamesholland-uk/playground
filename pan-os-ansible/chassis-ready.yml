@@ -2,7 +2,7 @@
 - name: Palo Alto Playbook
   hosts: '{{ target | default("host_labfw") }}'
   connection: local
-  gather_facts: no
+  gather_facts: false
 
   vars:
     provider:
@@ -16,11 +16,11 @@
 
   tasks:
     - name: Check if PAN-OS appliance is ready
-      panos_check:
+      paloaltonetworks.panos.panos_check:
         provider: "{{ provider }}"
       changed_when: false
       register: result
 
     - name: Display output
-      debug:
+      ansible.builtin.debug:
         msg: "{{ result.msg }}"

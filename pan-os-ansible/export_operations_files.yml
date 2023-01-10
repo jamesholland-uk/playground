@@ -1,0 +1,33 @@
+---
+- name: Export ops-related files
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Download Stats Dump file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "stats-dump"
+        filename: "statsdump.tar.gz"
+
+    - name: Download Device State file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "device-state"
+        filename: "device-state.tgz"
+
+    - name: Download Tech-Support file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "tech-support"
+        filename: "tech-support.tgz"

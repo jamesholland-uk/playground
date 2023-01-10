@@ -1,0 +1,40 @@
+---
+- name: Make Changes with Config Lock
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Wait for config lock
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        cmd: "<show><config-locks><vsys>{{ vsys }}</vsys></config-locks></show>"
+        cmd_is_xml: true
+      retries: 30
+      delay: 10
+      register: result
+      until: result.stdout_xml == '<response status="success"><result><config-locks /></result></response>'
+
+    - name: Acquire config lock
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        cmd: "<request><config-lock><add><comment>Ansible config lock</comment></add></config-lock></request>"
+        cmd_is_xml: true
+
+    - name: Change configuration here.
+      ansible.builtin.debug:
+        msg: "Configuration would be changed here"
+
+    - name: Release config lock
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        cmd: "<request><config-lock><remove></remove></config-lock></request>"
+        cmd_is_xml: true

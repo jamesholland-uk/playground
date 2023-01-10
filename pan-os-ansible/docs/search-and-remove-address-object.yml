@@ -1,0 +1,80 @@
+---
+- name: Search and remove an address object
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+    rmadr: "test4"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    # Garfield's old blog guide: https://live.paloaltonetworks.com/t5/automation-api-blog/ansible-using-facts-modules-to-do-updates/ba-p/275173
+    #
+    # - name: Get all address groups and their config
+    #   paloaltonetworks.panos.panos_object_facts:
+    #     provider: "{{ device }}"
+    #     object_type: "address-group"
+    #     name_regex: ".*"
+    #   register: ag
+
+    - name: Get all address groups and their config
+      paloaltonetworks.panos.panos_address_group:
+        provider: "{{ device }}"
+        state: "gathered"
+        gathered_filter: "*"
+      register: allgroups
+
+    # Compare old blog's outpout to new output
+    # Similar strcture, address groups in "objects" previously, now in "gathered"
+    #
+    # - name: Test
+    #   ansible.builtin.debug:
+    #     msg: "{{ ag }}"
+    #
+    # - name: Test
+    #   ansible.builtin.debug:
+    #     msg: "{{ allgroups }}"
+
+    # Garfield's old blog guide: https://live.paloaltonetworks.com/t5/automation-api-blog/ansible-using-facts-modules-to-do-updates/ba-p/275173
+    #
+    # - name: Remove address object from all groups
+    #   panos_address_group:
+    #     provider: '{{ aws_provider }}'
+    #     name: '{{ item.name }}'
+    #     description: '{{ item.description | default(omit, true) }}'
+    #     static_value: '{{ item.static_value | difference([rmadr]) }}'
+    #     tag: '{{ item.tag | default(omit, true) }}'
+    #     commit: false
+    #   loop: '{{ ag.objects }}'
+    #   loop_control:
+    #     label: '{{ item.name }}'
+    #   when:
+    #     - item.static_value
+    #     - rmadr in item.static_value
+
+    - name: Remove address object from all groups
+      paloaltonetworks.panos.panos_address_group:
+        provider: "{{ device }}"
+        name: "{{ item.name }}"
+        description: "{{ item.description | default(omit, true) }}"
+        tag: "{{ item.tag | default(omit, true) }}"
+        static_value: "{{ item.static_value | difference([rmadr]) }}"
+      loop: "{{ allgroups.gathered }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - item.static_value
+        - rmadr in item.static_value
+
+    - name: Remove the address object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        name: "{{ rmadr }}"
+        state: "absent"

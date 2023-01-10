@@ -1,0 +1,32 @@
+---
+- name: Gather rules
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    # - name: create l2 interface
+    #   paloaltonetworks.panos.panos_interface:
+    #     provider: "{{ device }}"
+    #     if_name: "ethernet1/1"
+    #     mode: "layer2"
+    #     zone_name: "zone404"
+    #     vlan_name: "vlan404"
+
+    - name: create l2 subinterface
+      paloaltonetworks.panos.panos_l2_subinterface:
+        provider: "{{ device }}"
+        name: "ethernet1/1.5"
+        tag: 5
+        vlan_name: "vlan404"
+        #netflow_profile: "netflow-test"
+        vsys: "vsys1"

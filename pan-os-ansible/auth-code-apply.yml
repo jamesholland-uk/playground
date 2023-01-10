@@ -1,0 +1,25 @@
+---
+- hosts: '{{ target | default("host_vm-series-a") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Activate my authcode
+      paloaltonetworks.panos.panos_lic:
+        provider: "{{ device }}"
+        auth_code: "IBADCODE"
+        force: true # This is required is the device has a serial, and you are trying to apply a feature/subscription auth code
+      register: result
+
+    - name: Pop results
+      ansible.builtin.debug:
+        msg: "{{ result }}"

@@ -2,3 +2,6 @@ Create a host_<hostname> file in host_vars for each potential host, include IP a
 Create inventory.txt, just a plain-text list of hosts in host_<hostname> format
 Use this to execute a playbook against a specific host:
     ansible-playbook playbook.yml -e target="host_firewall01"
+
+When using pyenv:
+ /Users/jholland/.pyenv/versions/3.10.4/bin/python -m pip install -U -r ../requirements.txt

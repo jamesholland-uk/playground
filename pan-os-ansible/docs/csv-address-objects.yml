@@ -1,0 +1,63 @@
+---
+- name: Create Address Object from a CSV Source File
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+    csv_filename: "../test.csv"
+
+  collections:
+    - paloaltonetworks.panos
+
+  #
+  # Format of CSV file for this example playbook
+  #
+  # hostname,ip
+  # test1,1.1.1.1
+  # test2,2.2.2.2
+  # test3,3.3.3.3
+  # test4,4.4.4.4
+  #
+
+  tasks:
+    - name: Read CSV file
+      ansible.builtin.read_csv:
+        path: "{{ csv_filename }}"
+        key: hostname
+      register: csv_data
+
+    - name: Create address objects
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        name: "{{ item.value.hostname }}"
+        value: "{{ item.value.ip }}"
+      with_items: "{{ csv_data.dict | dict2items }}"
+
+    - name: Create a list of the address objects
+      ansible.builtin.set_fact:
+        address_objects_list: "{{ csv_data.dict | dict2items | map(attribute='key') | list }}"
+
+    - name: Add address objects to address group
+      paloaltonetworks.panos.panos_address_group:
+        provider: "{{ device }}"
+        name: test_group
+        static_value: "{{ address_objects_list }}"
+        state: merged
+
+    - name: Add a security rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ device }}"
+        state: "present"
+        rule_name: "Test rule"
+        source_zone: ["any"]
+        destination_zone: ["any"]
+        source_ip: ["test_group"]
+        source_user: ["any"]
+        destination_ip: ["any"]
+        application: ["ssh"]
+        action: "allow"

@@ -1,0 +1,36 @@
+---
+- name: Playbook Example
+  hosts: '{{ target | default("host_homelabrama") }}'
+  connection: local
+
+  vars:
+    provider:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+    templat_stack_name: "lab-vm-series-stack"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+
+    # Both of the below tasks work, the modules work slightly differently to achieve the same result
+
+    # - name: add config setting to dynamically push content updates from panorama to palo instances upon first connection
+    #   paloaltonetworks.panos.panos_type_cmd:
+    #     provider: "{{ provider }}"
+    #     xpath: |
+    #       /config/devices/entry[@name='localhost.localdomain']
+    #       /template-stack/entry[@name='{{ templat_stack_name }}']
+    #     element: |
+    #       <auto-push-on-1st-conn>yes</auto-push-on-1st-conn>
+
+    # - name: add config setting to dynamically push content updates from panorama to palo instances upon first connection
+    #   paloaltonetworks.panos.panos_config_element:
+    #     provider: "{{ provider }}"
+    #     xpath: "/config/devices/entry[@name='localhost.localdomain']/template-stack/entry[@name='{{ templat_stack_name }}']/auto-push-on-1st-conn"
+    #     element: "<auto-push-on-1st-conn>yes</auto-push-on-1st-conn>"
+    #     edit: true

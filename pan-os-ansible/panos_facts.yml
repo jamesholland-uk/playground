@@ -20,7 +20,8 @@
 #
 #   $ ansible-playbook -i inventory panos_facts.yml
 
-- hosts: '{{ target | default("firewall") }}'
+- name: Gather system info
+  hosts: '{{ target | default("host_vm-series-a") }}'
   connection: local
 
   vars:
@@ -30,13 +31,16 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
+  collections:
+    - paloaltonetworks.panos
+
   tasks:
     - name: Gather facts for device
       paloaltonetworks.panos.panos_facts:
         provider: "{{ device }}"
 
-    - name: Display model, PAN-OS version
-      debug:
+    - name: Display information
+      ansible.builtin.debug:
         msg:
           - "Hostname: {{ ansible_facts['net_hostname'] }}"
           - "Serial: {{ ansible_facts['net_serial'] }}"

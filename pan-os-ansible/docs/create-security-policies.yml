@@ -1,0 +1,38 @@
+---
+- name: Create security policies
+  hosts: "firewall"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Add example rule 1
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ device }}"
+        rule_name: "example rule 1"
+        source_zone: ["any"]
+        source_ip: ["source-server"]
+        destination_zone: ["any"]
+        destination_ip: ["destination-server"]
+        application: ["ssh"]
+        service: ["tcp-12345"]
+        action: "allow"
+
+    - name: Add example rule 2
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ device }}"
+        rule_name: "example rule 2"
+        source_zone: ["any"]
+        source_ip: ["source-server"]
+        destination_zone: ["any"]
+        destination_ip: ["destination-server"]
+        application: ["ssh"]
+        service: ["tcp-9876"]
+        action: "deny"
