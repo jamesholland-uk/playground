@@ -1,0 +1,26 @@
+---
+- hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Issue firewall shutdown command
+      paloaltonetworks.panos.panos_op:
+        provider: '{{ device }}'
+        cmd: '<request><shutdown><system></system></shutdown></request>'
+        cmd_is_xml: true
+      register: "cmd_output"
+      failed_when: '"Command succeeded with no output" not in cmd_output.msg' # Always returns this error when succesful!
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ cmd_output }}"

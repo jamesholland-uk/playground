@@ -1,0 +1,25 @@
+---
+- name: Upgrade firewall offline from Panorama software store
+  hosts: "host_homelabrama"
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+    fw_serial: "007951000332727"
+    sw_version: "PanOS_vm-10.2.2"
+    reboot_firewall: false
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Upload software file to firewall from Panorama
+      paloaltonetworks.panos.panos_op:
+        provider: "{{ device }}"
+        cmd: "<request><batch><software><upload><devices>{{ fw_serial }}</devices><file>{{ sw_version }}</file></upload></software></batch></request>"
+        cmd_is_xml: true
+      register: uploadsw
