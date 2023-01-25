@@ -1,0 +1,65 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    # Old NAT module
+    # - name: Create dynamic NAT rule on the firewall
+    #   paloaltonetworks.panos.panos_nat_rule:
+    #     provider: "{{ device }}"
+    #     rule_name: "Ansible test 1"
+    #     source_zone: ["inside"]
+    #     destination_zone: "outside"
+    #     source_ip: ["any"]
+    #     destination_ip: ["10.10.10.1"]
+    #     service: "any"
+    #     snat_type: "dynamic-ip-and-port"
+    #     snat_interface: "ethernet1/1"
+    #     dnat_address: "10.0.1.101"
+    #     dnat_port: "22"
+    #     # dnat_dynamic_address: "1.1.1.1"
+    #     # dnat_dynamic_port: "80"
+    #     # dnat_dynamic_distribution: "Round Robin"
+
+    # Old NAT module
+    # - name: Create static NAT rule
+    #   paloaltonetworks.panos.panos_nat_rule:
+    #     provider: "{{ device }}"
+    #     rule_name: "nat rule"
+    #     description: "new NAT"
+    #     source_zone: "inside"
+    #     source_ip: "192.168.1.1"
+    #     destination_ip: "any"
+    #     destination_zone: "outside"
+    #     to_interface: "ethernet1/1"
+    #     service: "any"
+    #     snat_type: "static-ip"
+    #     snat_static_address: "1.1.1.1"
+    #     snat_bidirectional: "yes"
+
+    # New NAT module
+    - name: Create static NAT rule
+      paloaltonetworks.panos.panos_nat_rule2:
+        provider: "{{ device }}"
+        name: "nat rule"
+        description: "new NAT"
+        from_zones: ["inside"]
+        source_addresses: "192.168.1.1"
+        destination_addresses: "any"
+        to_zones: ["outside"]
+        to_interface: "ethernet1/1"
+        service: "any"
+        source_translation_type: "static-ip"
+        source_translation_static_translated_address: "1.1.1.1"
+        source_translation_static_bi_directional: "yes"
