@@ -1,5 +1,5 @@
 ---
-- hosts: '{{ target | default("host_vm-series-a") }}'
+- hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:
@@ -8,15 +8,17 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
-    virtual_router_name: "tem"
+    virtual_router_name: "new-vrouter"
     ospf_area: "5.5.5.5"
-    network_interface: "ethernet1/8"
+    network_interface: "ethernet1/1"
     router_id: "10.10.10.1"
+    new_metric: 50
 
   collections:
     - paloaltonetworks.panos
 
   tasks:
+    # Create OSPF config
     - name: OSPF config
       paloaltonetworks.panos.panos_config_element:
         provider: "{{ device }}"
@@ -45,3 +47,11 @@
           </entry></interface></entry>
           </area><router-id>{{ router_id }}</router-id>
           </ospf>"
+
+    # Change OSPF interface metric
+    - name: Change OSPF interface metric
+      paloaltonetworks.panos.panos_config_element:
+        provider: "{{ device }}"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/network/virtual-router/entry[@name='{{ virtual_router_name }}']/protocol/ospf/area/entry[@name='{{ ospf_area }}']/interface/entry[@name='{{ network_interface }}']/metric"
+        element: "<metric>{{ new_metric }}</metric>"
+        edit: true
