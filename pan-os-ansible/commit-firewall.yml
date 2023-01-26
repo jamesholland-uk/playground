@@ -1,6 +1,6 @@
 ---
 - name: Palo Alto Playbook
-  hosts: '{{ target | default("firewall") }}'
+  hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:
@@ -15,9 +15,9 @@
 
   tasks:
     - name: Commit candidate configuration
-      panos_commit_firewall:
+      paloaltonetworks.panos.panos_commit_firewall:
         provider: "{{ device }}"
       register: results
     - name: Output results
       ansible.builtin.debug:
-        msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results.details }}"
+        msg: "Commit with Job ID: {{ results.jobid }} had output: {{ results }}"
