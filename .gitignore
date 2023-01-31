@@ -3,6 +3,7 @@
 *.tfstate.*
 crash.log
 *.tfvars
+!example.tfvars
 .DS_Store
 .ansible
 .azure/
@@ -37,3 +38,4 @@ python/__pycache__/netmiko.cpython-310.pyc
 firewall.yml
 exampleconfig.xml
 auth*.json
+ssh_private_key.pem
