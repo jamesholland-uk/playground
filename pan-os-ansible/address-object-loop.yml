@@ -1,0 +1,40 @@
+---
+- name: Address objects with a loop
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+    address_objects:
+      - {
+        "address_type": "ip-netmask",
+        "description": null,
+        "name": "192.168.0.1_SOLARWINDS",
+        "tag": "tag-one",
+        "value": "192.168.0.1/32"
+      }
+      - {
+        "address_type": "ip-netmask",
+        "description": null,
+        "name": "192.168.0.2_SOLARWINDS",
+        "tag": null,
+        "value": "192.168.0.2/32"
+      }
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create address objects
+      paloaltonetworks.panos.panos_address_object:
+        provider: '{{ device }}'
+        name: '{{ item.name }}'
+        value: '{{ item.value }}'
+        description: '{{ item.description }}'
+        tag: '{{ item.tag | default(omit, omit) }}'
+        commit: false
+      with_items: '{{ address_objects }}'

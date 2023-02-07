@@ -1,0 +1,31 @@
+---
+- name: Clone address object using gathered
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Gather config
+      panos_address_object:
+        provider: '{{ device }}'
+        state: 'gathered'
+        name: 'addr-obj-one'
+      register: orig
+
+    - name: Clone
+      panos_address_object:
+        provider: '{{ device }}'
+        name: 'addr-obj-two'
+        value: '{{ orig.gathered.value }}'
+        address_type: '{{ orig.gathered.address_type }}'
+        description: '{{ orig.gathered.description }}'
+        tag: '{{ orig.gathered.tag }}'
