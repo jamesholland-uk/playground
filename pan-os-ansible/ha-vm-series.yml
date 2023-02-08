@@ -1,0 +1,30 @@
+---
+- name: HA Config
+  hosts: '{{ target | default("host_azure_payg") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Configure Active/Standby HA
+      paloaltonetworks.panos.panos_ha:
+        provider: "{{ device }}"
+        state: present
+        ha_peer_ip: "10.75.0.53"
+        ha1_ip_address: "10.75.0.52"
+        ha1_netmask: "255.255.255.240"
+        ha1_port: "management"
+        ha2_port: "ethernet1/4"
+        ha_mode: "active-passive"
+        ha_enabled: true
+        ha_group_id: 5
+        # FOR AZURE, NEED THIS PARAM TO NOT BE SENT IN THE XML API: ha_passive_link_state
+        commit: "false"
