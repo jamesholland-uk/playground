@@ -1,54 +1,54 @@
 variable "panos_hostname" {
-  type = string
+  type    = string
   default = "192.168.1.1"
 }
 
 variable "panos_username" {
-  type = string
+  type    = string
   default = "admin"
 }
 
 variable "panos_password" {
-  type = string
+  type    = string
   default = "admin"
 }
 
 variable "panorama_template" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "ike_psk1" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "ike_psk2" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "awspeer1" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "awspeer2" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "aws_region" {
-  type = string
+  type    = string
   default = "admin"
 }
 
 variable "aws_access_key" {
-  type = string
+  type    = string
   default = "admin"
 }
 
 variable "aws_secret_key" {
-  type = string
+  type    = string
   default = "admin"
 }
