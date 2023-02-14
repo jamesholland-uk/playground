@@ -1,5 +1,5 @@
 ---
-- hosts: '{{ target | default("firewall") }}'
+- hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:
@@ -9,14 +9,11 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-    # Hardcoded example variables
-    vr: "default"
-
   collections:
     - paloaltonetworks.panos
 
   tasks:
-    - name: Create rule 2
+    - name: Create import rule
       paloaltonetworks.panos.panos_bgp_policy_rule:
         provider: "{{ device }}"
         vr_name: "default"
@@ -27,7 +24,7 @@
         enable: true
         action: "allow"
 
-    - name: Create rule
+    - name: Create import rule 2
       paloaltonetworks.panos.panos_bgp_policy_rule:
         provider: "{{ device }}"
         vr_name: "default"
@@ -37,3 +34,15 @@
           - name: "10.1.1.0/24"
         enable: true
         action: "allow"
+
+    - name: Create export rule
+      paloaltonetworks.panos.panos_bgp_policy_rule:
+        provider: '{{ device }}'
+        vr_name: 'new-vrouter'
+        name: 'Export'
+        type: 'export'
+        used_by: ['network1', 'network2']
+        action_as_path_type: 'remove'
+        match_as_path_regex: '12345'
+        action: 'allow'
+        commit: false
