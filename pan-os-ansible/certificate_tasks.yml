@@ -1,0 +1,25 @@
+---
+- name: Certificate ops
+  hosts: '{{ target | default("firewall") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Export cert with keys
+      paloaltonetworks.panos.panos_export:
+        provider: '{{ device }}'
+        category: 'certificate'
+        filename: '2023-jamoi-xyz-wildcard.pem'
+        certificate_name: '2023-jamoi-xyz-wildcard'
+        certificate_format: pem
+        certificate_include_keys: true
+        certificate_passphrase: 'somethingSecret'

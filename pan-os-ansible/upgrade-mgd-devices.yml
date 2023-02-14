@@ -1,5 +1,5 @@
 ---
-- hosts: '{{ target | default("homelabrama") }}'
+- hosts: '{{ target | default("host_homelabrama") }}'
   connection: local
 
   vars:
@@ -8,13 +8,41 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
-      serial_number: "{{ serialnumber }}"
+      serial_number: "{{ serial_number }}"
 
   tasks:
-    - name: Download PAN-OS upgrade to managed device via Panorama
+    # - name: Download PAN-OS version to managed device via Panorama
+    #   paloaltonetworks.panos.panos_software:
+    #     provider: "{{ device }}"
+    #     version: "{{ version }}"
+    #     sync_to_peer: false
+    #     download: true
+    #     install: false
+    #     restart: false
+
+    # - name: Install PAN-OS version to managed device via Panorama
+    #   paloaltonetworks.panos.panos_software:
+    #     provider: "{{ device }}"
+    #     version: "{{ version }}"
+    #     sync_to_peer: false
+    #     download: false
+    #     install: true
+    #     restart: false
+
+    # - name: Reboot after install PAN-OS version to managed device via Panorama
+    #   paloaltonetworks.panos.panos_software:
+    #     provider: "{{ device }}"
+    #     version: "{{ version }}"
+    #     sync_to_peer: false
+    #     download: false
+    #     install: false
+    #     restart: true
+
+    - name: Entire PAN-OS version change for managed device via Panorama
       paloaltonetworks.panos.panos_software:
         provider: "{{ device }}"
-        version: "{{ newversion }}"
+        version: "{{ version }}"
         sync_to_peer: false
-        install: false
-        restart: false
+        download: true
+        install: true
+        restart: true

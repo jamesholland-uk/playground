@@ -31,3 +31,43 @@
         provider: "{{ device }}"
         category: "tech-support"
         filename: "tech-support.tgz"
+
+    - name: Export cert with keys
+      paloaltonetworks.panos.panos_export:
+        provider: '{{ device }}'
+        category: 'certificate'
+        filename: '2023-jamoi-xyz-wildcard.pem'
+        certificate_name: '2023-jamoi-xyz-wildcard'
+        certificate_format: pem
+        certificate_include_keys: true
+        certificate_passphrase: 'somethingSecret'
+
+    - name: Download filter PCAP file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "filter-pcap"
+        filter_pcap_name: "rx"
+        filename: "rx.pcap"
+
+    - name: Download Application PCAP file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "application-pcap"
+        application_pcap_name: "/20230213/192.168.150.17-17500-192.168.150.255-17500-163170.pcap"
+        filename: "app.pcap"
+
+    - name: Download Threat PCAP file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "threat-pcap"
+        threat_pcap_id: "1209149423666345685"
+        threat_pcap_search_time: "2023/02/13 16:33:12"
+        filename: "threat.pcap"
+
+    - name: Download DLP PCAP file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: "dlp-pcap"
+        dlp_password: "Commit123!"
+        dlp_pcap_name: "20230213/192.168.150.49-59018-104.154.89.105-443-154006"
+        filename: "dlp.pcap"
