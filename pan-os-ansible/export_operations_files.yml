@@ -36,8 +36,8 @@
       paloaltonetworks.panos.panos_export:
         provider: '{{ device }}'
         category: 'certificate'
-        filename: '2023-jamoi-xyz-wildcard.pem'
-        certificate_name: '2023-jamoi-xyz-wildcard'
+        filename: 'cert.pem'
+        certificate_name: 'my-cert'
         certificate_format: pem
         certificate_include_keys: true
         certificate_passphrase: 'somethingSecret'
@@ -60,14 +60,14 @@
       paloaltonetworks.panos.panos_export:
         provider: "{{ device }}"
         category: "threat-pcap"
-        threat_pcap_id: "1209149423666345685"
-        threat_pcap_search_time: "2023/02/13 16:33:12"
+        threat_pcap_id: "1152921504606876542"
+        threat_pcap_search_time: "2023/02/22 11:47:30"
         filename: "threat.pcap"
 
     - name: Download DLP PCAP file
       paloaltonetworks.panos.panos_export:
         provider: "{{ device }}"
         category: "dlp-pcap"
-        dlp_password: "Commit123!"
+        dlp_password: "somethingSecret"
         dlp_pcap_name: "20230213/192.168.150.49-59018-104.154.89.105-443-154006"
         filename: "dlp.pcap"
