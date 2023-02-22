@@ -1,0 +1,36 @@
+---
+- name: Layer2 interfaces
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+    interfaces:
+      - { name: ethernet1/7, mode: layer3, enable_dhcp: true, create_default_route: true, ipv6_enabled: false, zone_name: External }
+      - { name: ethernet1/8, mode: layer2, vlan_name: Management, lldp_enabled: false, zone_name: VLANs }
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Create interfaces
+      paloaltonetworks.panos.panos_interface:
+        provider: '{{ device }}'
+        state: present
+        if_name: '{{ item.name }}'
+        mode: '{{ item.mode | default(omit) }}'
+        ip: '{{ item.ip | default(omit) }}'
+        enable_dhcp: '{{ item.enable_dhcp | default(omit) }}'
+        create_default_route: '{{ item.create_default_route | default(omit) }}'
+        ipv6_enabled: '{{ item.ipv6_enabled | default(omit) }}'
+        vlan_name: '{{ item.vlan | default(omit) }}'
+        lldp_enabled: '{{ item.lldp_enabled | default(omit) }}'
+        zone_name: '{{ item.zone_name | default(omit) }}'
+        management_profile: '{{ item.management_profile | default(omit) }}'
+        comment: '{{ item.comment | default(omit) }}'
+        commit: false
+      loop: "{{ interfaces }}"
