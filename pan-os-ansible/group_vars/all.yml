@@ -3,4 +3,4 @@
 #
 # See http://willthames.github.io/2018/07/01/connection-local-vs-delegate_to-localhost.html.
 ansible_python_interpreter: "{{ ansible_playbook_python }}"
-#ansible_python_interpreter: '/usr/bin/python'
+# ansible_python_interpreter: '/usr/bin/python'

@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("host_labfw") }}'
+- name: OSPF config
+  hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:
@@ -52,6 +53,10 @@
     - name: Change OSPF interface metric
       paloaltonetworks.panos.panos_config_element:
         provider: "{{ device }}"
-        xpath: "/config/devices/entry[@name='localhost.localdomain']/network/virtual-router/entry[@name='{{ virtual_router_name }}']/protocol/ospf/area/entry[@name='{{ ospf_area }}']/interface/entry[@name='{{ network_interface }}']/metric"
+        xpath: >
+          "/config/devices/entry[@name='localhost.localdomain']/network/virtual-router/
+          entry[@name='{{ virtual_router_name }}']/protocol/ospf/area/
+          entry[@name='{{ ospf_area }}']/interface/
+          entry[@name='{{ network_interface }}']/metric"
         element: "<metric>{{ new_metric }}</metric>"
         edit: true
