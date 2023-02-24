@@ -1,9 +1,9 @@
-name: ansible-lint
+name: Lint
 on: [push, pull_request]
 
 jobs:
   build:
-    name: Ansible Lint
+    name: ansible-lint
     runs-on: ubuntu-latest
 
     steps:
