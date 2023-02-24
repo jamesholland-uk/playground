@@ -25,7 +25,7 @@
             {
                 "assets": [
                     {
-                        "path": "*.tar.gz"
+                        "path": "./README.md"
                     }
                 ],
                 "successComment": ":tada: This ${issue.pull_request ? 'PR is included' : 'issue has been resolved'} in version ${nextRelease.version} :tada:\n\nThe release is available on [Ansible Galaxy](https://galaxy.ansible.com/paloaltonetworks/panos) and [GitHub release](https://github.com/PaloAltoNetworks/pan-os-ansible/releases)\n\n> Posted by [semantic-release](https://github.com/semantic-release/semantic-release) bot"
