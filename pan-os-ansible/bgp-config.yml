@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("host_labfw") }}'
+- name: 'BGP config tasks'
+  hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:
@@ -9,10 +10,23 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
+    - name: Create Policy Export Rule
+      paloaltonetworks.panos.panos_bgp_policy_rule:
+        provider: '{{ device }}'
+        vr_name: 'new-vrouter'
+        name: 'test-rule-1'
+        type: 'export'
+        enable: true
+        action: 'allow'
+        address_prefix:
+          - name: '10.10.10.0/24'
+            exact: true
+          - name: '192.168.0.0/16'
+        action_community_type: 'append'
+        action_community_argument: '100:10'
+        used_by: 'network1'
+
     - name: Create import rule
       paloaltonetworks.panos.panos_bgp_policy_rule:
         provider: "{{ device }}"
@@ -45,4 +59,3 @@
         action_as_path_type: 'remove'
         match_as_path_regex: '12345'
         action: 'allow'
-        commit: false
