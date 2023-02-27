@@ -1,0 +1,22 @@
+---
+- name: URL category test
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Create test URL category
+      paloaltonetworks.panos.panos_custom_url_category:
+        type: URL List
+        provider: "{{ device }}"
+        name: test-api-list
+        description: test-api-list
+        url_value:
+          - www.example.com
+          - www2.example.com
