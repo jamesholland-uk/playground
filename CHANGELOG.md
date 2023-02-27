@@ -1,3 +1,10 @@
+## [1.1.0](https://github.com/jamesholland-uk/playground/compare/v1.0.1...v1.1.0) (2023-02-27)
+
+
+### Features
+
+* url category playbook ([f21578e](https://github.com/jamesholland-uk/playground/commit/f21578e42fc9f5c8ee3f0a1982591665aa6253ae))
+
 ### [1.0.1](https://github.com/jamesholland-uk/playground/compare/v1.0.0...v1.0.1) (2023-02-24)
 
 
