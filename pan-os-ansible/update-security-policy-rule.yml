@@ -1,0 +1,85 @@
+---
+- name: Update an existing security policy rule
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+    rulename: "mgmt-access"
+
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    # Modify destination IP - Bad idea - redefine rule with just dest IP, make source IP = any
+    # - name: Just provide dest IP
+    #   paloaltonetworks.panos.panos_security_rule:
+    #     provider: '{{ device }}'
+    #     rule_name: '{{ rulename }}'
+    #     source_zone: ['consumer']
+    #     destination_zone: ['mgmt']
+    #     destination_ip: ['addr-obj-one', 'addr-obj-two']
+    #     action: 'allow'
+
+    # Modify destination IP - Better idea - gather existing rule, then replay the modified rule
+    - name: Gather rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ device }}'
+        state: 'gathered'
+        rule_name: '{{ rulename }}'
+      register: original_rule
+
+    - name: debug
+      ansible.builtin.debug:
+        msg: '{{ original_rule }}'
+
+
+    - name: debug items
+      ansible.builtin.debug:
+        msg: '{{ item }}'
+        # msg: '{{ item.name }} = {{ item.value }}'
+      with_items: '{{ original_rule.gathered }}'
+
+    - name: Replay modified rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ device }}'
+        rule_name: '{{ rulename }}'
+        action: '{{ original_rule.gathered.action | default(omit, true) }}'
+        antivirus: '{{ original_rule.gathered.antivirus | default(omit, true) }}'
+        application: '{{ original_rule.gathered.application | default(omit, true) }}'
+        category: '{{ original_rule.gathered.category | default(omit, true) }}'
+        data_filtering: '{{ original_rule.gathered.data_filtering | default(omit, true) }}'
+        description: '{{ original_rule.gathered.description | default(omit, true) }}'
+        # destination_devices: '{{ original_rule.gathered.destination_devices | default(omit, true) }}'
+        destination_ip: '{{ original_rule.gathered.destination_ip | default(omit, true) }}'
+        destination_zone: '{{ original_rule.gathered.destination_zone | default(omit, true) }}'
+        disable_server_response_inspection: '{{ original_rule.gathered.disable_server_response_inspection | default(omit, true) }}'
+        disabled: '{{ original_rule.gathered.disabled | default(omit, true) }}'
+        file_blocking: '{{ original_rule.gathered.file_blocking | default(omit, true) }}'
+        group_profile: '{{ original_rule.gathered.group_profile[0] | default(omit, true) }}'
+        group_tag: '{{ original_rule.gathered.group_tag | default(omit, true) }}'
+        icmp_unreachable: '{{ original_rule.gathered.icmp_unreachable | default(omit, true) }}'
+        log_end: '{{ original_rule.gathered.log_end | default(omit, true) }}'
+        log_setting: '{{ original_rule.gathered.log_setting | default(omit, true) }}'
+        log_start: '{{ original_rule.gathered.log_start | default(omit, true) }}'
+        negate_destination: '{{ original_rule.gathered.negate_destination | default(omit, true) }}'
+        negate_source: '{{ original_rule.gathered.negate_source | default(omit, true) }}'
+        negate_target: '{{ original_rule.gathered.negate_target | default(omit, true) }}'
+        rule_type: '{{ original_rule.gathered.rule_type | default(omit, true) }}'
+        schedule: '{{ original_rule.gathered.schedule | default(omit, true) }}'
+        service: '{{ original_rule.gathered.service | default(omit, true) }}'
+        # source_devices: '{{ original_rule.gathered.source_devices | default(omit, true) }}'
+        source_ip: '{{ original_rule.gathered.source_ip | default(omit, true) }}'
+        source_user: '{{ original_rule.gathered.source_user | default(omit, true) }}'
+        source_zone: '{{ original_rule.gathered.source_zone | default(omit, true) }}'
+        spyware: '{{ original_rule.gathered.spyware | default(omit, true) }}'
+        tag_name: '{{ original_rule.gathered.tag_name | default(omit, true) }}'
+        target: '{{ original_rule.gathered.target | default(omit, true) }}'
+        url_filtering: '{{ original_rule.gathered.url_filtering | default(omit, true) }}'
+        vulnerability: '{{ original_rule.gathered.vulnerability | default(omit, true) }}'
+        wildfire_analysis: '{{ original_rule.gathered.wildfire_analysis | default(omit, true) }}'
