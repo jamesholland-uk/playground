@@ -1,0 +1,43 @@
+---
+- name: Remove orphaned objects, that are live in PAN-OS but not in the CMDB/SoT
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Mocking a list of address objects from CMB/SoT
+      ansible.builtin.set_fact:
+        cmdb_address_objects: ['quad9', 'addr-obj-one', 'addr-obj-two', 'new-obj']
+
+    - name: Gather all live address objects in PAN-OS config
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        gathered_filter: "*"
+        state: gathered
+      register: live_address_objects_config
+
+    - name: Start list of live address object names
+      ansible.builtin.set_fact:
+        live_address_objects: []
+
+    - name: Add live address object names to list
+      ansible.builtin.set_fact:
+        live_address_objects: '{{ live_address_objects + [item.name] }}'
+      with_items: '{{ live_address_objects_config.gathered }}'
+
+    - name: Get diff of live versus CMDB, results in a list of object in PAN-OS that are not in CMDB
+      ansible.builtin.set_fact:
+        address_objects_diff: '{{ live_address_objects | difference(cmdb_address_objects) }}'
+
+    - name: Delete address objects in PAN-OS that are not in CMDB
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        name: '{{ item }}'
+        state: absent
+      with_items: '{{ address_objects_diff }}'

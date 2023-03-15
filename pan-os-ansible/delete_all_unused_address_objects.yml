@@ -1,0 +1,28 @@
+---
+- name: Gather rules
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Gather all address objects
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        gathered_filter: "*"
+        state: gathered
+      register: addresobjects
+
+    - name: Delete all address objects # Objects in use will not be deleted by PAN-OS
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        name: '{{ item.name }}'
+        state: absent
+      with_items: '{{ addresobjects.gathered }}'
+      ignore_errors: true
+      register: ignore_errors_register
