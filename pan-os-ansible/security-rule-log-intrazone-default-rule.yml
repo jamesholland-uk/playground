@@ -1,0 +1,22 @@
+---
+- name: Palo Alto Playbook
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Set logging on interzone-default
+      paloaltonetworks.panos.panos_type_cmd:
+        provider: '{{ device }}'
+        xpath: |
+          /config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']
+          /rulebase/default-security-rules/rules/entry[@name='interzone-default']
+        cmd: edit
+        element:
+          <entry name="interzone-default"><action>deny</action><log-end>yes</log-end></entry>
