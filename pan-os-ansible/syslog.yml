@@ -10,18 +10,15 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create syslog server profile
-      panos_syslog_profile:
+      paloaltonetworks.panos.panos_syslog_profile:
         provider: "{{ provider }}"
         name: "new-syslog-server-profile"
         device_group: "lab-vm-series"
 
     - name: Create syslog server for server profile
-      panos_syslog_server:
+      paloaltonetworks.panos.panos_syslog_server:
         provider: "{{ provider }}"
         syslog_profile: "new-syslog-server-profile"
         name: "syslog-server-1"

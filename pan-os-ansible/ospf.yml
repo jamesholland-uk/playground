@@ -15,9 +15,6 @@
     router_id: "10.10.10.1"
     new_metric: 50
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     # Create OSPF config
     - name: OSPF config

@@ -1,0 +1,27 @@
+---
+- name: Playbook Example
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Create Netflow details with config_element
+      paloaltonetworks.panos.panos_config_element:
+        provider: "{{ device }}"
+        xpath: '/config/shared/server-profile/netflow'
+        element: |
+          <entry name="NFSP-EF">
+          <server>
+          <entry name="flowserver"><host>192.168.1.21</host><port>2055</port></entry>
+          <entry name="flowserver2"><host>192.168.1.21</host><port>9995</port></entry>
+          </server>
+          <template-refresh-rate><minutes>1</minutes><packets>20</packets></template-refresh-rate>
+          <active-timeout>5</active-timeout>
+          <export-enterprise-fields>yes</export-enterprise-fields>
+          </entry>
