@@ -1,0 +1,25 @@
+resource "panos_nat_rule_group" "bot" {
+    rule {
+        name = "second"
+        audit_comment = "Initial config"
+        original_packet {
+            source_zones = ["External"]
+            destination_zone = "External"
+            destination_interface = "ethernet1/7"
+            source_addresses = ["any"]
+            destination_addresses = ["any"]
+        }
+        translated_packet {
+            source {}
+            destination {
+                static_translation {
+                    address = "10.2.3.1"
+                    port = 5678
+                }
+            }
+        }
+    }
+    lifecycle {
+        create_before_destroy = true
+    }
+}

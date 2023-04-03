@@ -22,8 +22,8 @@ resource "sase_objects_regions" "test_terraform_01" {
   folder = "Shared"
   name   = "test-region-01-terraform-london"
   geo_location = {
-    latitude  = 51.5 # 51.500152
-    longitude = 1    # -0.126236
+    latitude  = 51.500152
+    longitude = -0.126236
   }
 }
 

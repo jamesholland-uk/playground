@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("firewall") }}'
+- name: PANO-OS Playbook
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:

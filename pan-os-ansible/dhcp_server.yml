@@ -1,0 +1,65 @@
+---
+- name: PAN-OS Playbook
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    # Both of the below tasks work, the modules work slightly differently to achieve the same result
+
+    # - name: Create dhcp-server
+    #   paloaltonetworks.panos.panos_config_element:
+    #     provider: "{{ device }}"
+    #     xpath: "/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface"
+    #     element: |
+    #       <entry name="ethernet1/3">
+    #       <server>
+    #       <option>
+    #       <dns>
+    #       <primary>8.8.8.8</primary>
+    #       <secondary>8.8.4.4</secondary>
+    #       </dns>
+    #       <lease>
+    #       <timeout>480</timeout>
+    #       </lease>
+    #       <gateway>172.16.16.1</gateway>
+    #       <subnet-mask>255.255.255.0</subnet-mask>
+    #       </option>
+    #       <ip-pool>
+    #       <member>172.16.16.2-172.16.16.254</member>
+    #       </ip-pool>
+    #       <mode>auto</mode>
+    #       <probe-ip>yes</probe-ip>
+    #       </server>
+    #       </entry>
+
+    # - name: Create dhcp-server
+    #   paloaltonetworks.panos.panos_type_cmd:
+    #     provider: "{{ device }}"
+    #     cmd: "set"
+    #     xpath: "/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='ethernet1/3']"
+    #     element: |
+    #       <server>
+    #       <option>
+    #       <dns>
+    #       <primary>8.8.8.8</primary>
+    #       <secondary>8.8.4.4</secondary>
+    #       </dns>
+    #       <lease>
+    #       <timeout>480</timeout>
+    #       </lease>
+    #       <gateway>172.16.16.1</gateway>
+    #       <subnet-mask>255.255.255.0</subnet-mask>
+    #       </option>
+    #       <ip-pool>
+    #       <member>172.16.16.2-172.16.16.254</member>
+    #       </ip-pool>
+    #       <mode>auto</mode>
+    #       <probe-ip>yes</probe-ip>
+    #       </server>
