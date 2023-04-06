@@ -9,7 +9,6 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
-    passphrase: "test&"
 
   tasks:
     # - name: Export cert from NGFW with keys
@@ -29,5 +28,5 @@
         category: 'keypair'
         certificate_name: 'test12345678a'
         format: 'pkcs12'
-        filename: 'local-ca.p12'
-        passphrase: "{{ passphrase | urlencode() }}"
+        filename: 'local-ca-test.p12'
+        passphrase: "{{ passphrase }}"
