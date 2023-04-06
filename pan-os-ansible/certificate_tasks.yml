@@ -9,17 +9,18 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
+    passphrase: "test&"
 
   tasks:
-    - name: Export cert from NGFW with keys
-      paloaltonetworks.panos.panos_export:
-        provider: '{{ device }}'
-        category: 'certificate'
-        filename: '2023-jamoi-xyz-wildcard.pem'
-        certificate_name: '2023-jamoi-xyz-wildcard'
-        certificate_format: pem
-        certificate_include_keys: true
-        certificate_passphrase: "{{ passphrase }}"
+    # - name: Export cert from NGFW with keys
+    #   paloaltonetworks.panos.panos_export:
+    #     provider: '{{ device }}'
+    #     category: 'certificate'
+    #     filename: '2023-jamoi-xyz-wildcard.pem'
+    #     certificate_name: '2023-jamoi-xyz-wildcard'
+    #     certificate_format: pem
+    #     certificate_include_keys: true
+    #     certificate_passphrase: "{{ passphrase }}"
 
     - name: Upload cert to Panorama
       paloaltonetworks.panos.panos_import:
@@ -29,4 +30,4 @@
         certificate_name: 'test12345678a'
         format: 'pkcs12'
         filename: 'local-ca.p12'
-        passphrase: "{{ passphrase }}"
+        passphrase: "{{ passphrase | urlencode() }}"
