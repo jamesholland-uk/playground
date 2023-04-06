@@ -1,3 +1,10 @@
+## [1.2.0](https://github.com/jamesholland-uk/playground/compare/v1.1.0...v1.2.0) (2023-04-06)
+
+
+### Features
+
+* Testing encoding ([d3cbc10](https://github.com/jamesholland-uk/playground/commit/d3cbc1007908530888200a268b00dabf329a7823))
+
 ## [1.1.0](https://github.com/jamesholland-uk/playground/compare/v1.0.1...v1.1.0) (2023-02-27)
 
 
