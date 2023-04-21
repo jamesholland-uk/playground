@@ -9,16 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Ansible
-        run: sudo apt install ansible -y
-
-      - name: Install CollectionsRequirements
-        run: ansible-galaxy collection install -r pan-os-ansible/collections/requirements.yml
-
-      - name: Install CollectionsRequirements
-        run: pip3 install --user -r pan-os-ansible/requirements.txt
-
       - name: Run ansible-lint
-        uses: ansible/ansible-lint-action@v6
+        uses: ansible/ansible-lint-action@v6.11.0
         with:
           path: "pan-os-ansible/"
