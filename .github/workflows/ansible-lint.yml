@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install Ansible
+        run: sudo apt install ansible -y
+
       - name: Install PAN-OS collection
         run: |
          ansible-galaxy collection install paloaltonetworks.panos
