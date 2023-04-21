@@ -12,6 +12,7 @@ jobs:
       - name: Install PAN-OS collection
         run: |
          ansible-galaxy collection install paloaltonetworks.panos
+         ansible-config dump | grep DEFAULT_MODULE_PATH
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint-action@v6
