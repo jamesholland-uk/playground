@@ -9,7 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install PAN-OS collection
+        run: |
+         ansible-galaxy collection install paloaltonetworks.panos
+
       - name: Run ansible-lint
-        uses: ansible/ansible-lint-action@main
+        uses: ansible/ansible-lint-action@v6
         with:
           path: "pan-os-ansible/"
