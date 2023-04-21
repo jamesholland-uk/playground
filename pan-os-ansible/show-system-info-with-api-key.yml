@@ -4,9 +4,6 @@
   gather_facts: false
   connection: local
 
-  collections:
-    - paloaltonetworks.panos
-
   vars:
     device:
       ip_address: "{{ ip_address }}"

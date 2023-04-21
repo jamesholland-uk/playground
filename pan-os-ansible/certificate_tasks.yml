@@ -1,6 +1,6 @@
 ---
 - name: Certificate ops
-  hosts: '{{ target | default("host_homelabrama") }}'
+  hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:
@@ -11,7 +11,7 @@
       api_key: "{{ api_key | default(omit) }}"
 
   tasks:
-    # - name: Export cert from NGFW with keys
+    # - name: Export cert with keys
     #   paloaltonetworks.panos.panos_export:
     #     provider: '{{ device }}'
     #     category: 'certificate'
@@ -21,12 +21,13 @@
     #     certificate_include_keys: true
     #     certificate_passphrase: "{{ passphrase }}"
 
-    - name: Upload cert to Panorama
+    - name: Upload cert
       paloaltonetworks.panos.panos_import:
         provider: '{{ device }}'
-        template_stack: 'new-tmplstack'
+        # template_stack: 'new-tmplstack'
         category: 'keypair'
         certificate_name: 'test12345678a'
         format: 'pkcs12'
-        filename: 'local-ca-test.p12'
+        filename: 'local-ca.p12'
         passphrase: "{{ passphrase }}"
+        block_private_key: "yes"

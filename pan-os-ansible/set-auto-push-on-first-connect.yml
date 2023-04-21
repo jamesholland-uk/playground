@@ -12,9 +12,6 @@
 
     templat_stack_name: "lab-vm-series-stack"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
 
     # Both of the below tasks work, the modules work slightly differently to achieve the same result

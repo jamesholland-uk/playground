@@ -11,12 +11,9 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create security rule
-      panos_security_rule:
+      paloaltonetworks.panos.panos_security_rule:
         provider: "{{ palo_provider }}"
         rule_name: "Ansible test 1"
         source_zone: ["inside"]
@@ -27,7 +24,7 @@
         service: "any"
         action: "allow"
     - name: Create security rule
-      panos_security_rule:
+      paloaltonetworks.panos.panos_security_rule:
         provider: "{{ palo_provider }}"
         rule_name: "Ansible test 2"
         source_zone: ["inside"]

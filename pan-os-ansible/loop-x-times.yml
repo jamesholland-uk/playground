@@ -10,21 +10,18 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
-    - name: with_sequence -> loop
+    - name: A with_sequence -> loop
       ansible.builtin.debug:
         # testuser, % for formatting, 0 for 'fill' preceeding with zeros, 4 is minimum width of chars, d is decimal
         # https://docs.python.org/3/library/string.html#format-specification-mini-language
         msg: "{{ 'testuser%04d' | format(item) }}"
       # range is exclusive of the end point - start, end, gap
       # https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#with-sequence
-      loop: "{{ range(98, 104, 1)| list }}"
+      loop: "{{ range(98, 104, 1) | list }}"
 
     - name: Add IPSec tunnels
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn%03d' | format(item) }}"
         tunnel_interface: "tunnel.1"
@@ -33,7 +30,7 @@
       loop: "{{ range(98, 102, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn%03d' | format(item) }}"

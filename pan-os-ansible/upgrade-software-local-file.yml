@@ -10,18 +10,15 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     # To upgrade PAN-OS, and pre-requisite content upgrade, from local files for airgapped firewall
     - name: Import content file into PAN-OS
-      panos_import:
+      paloaltonetworks.panos.panos_import:
         provider: "{{ provider }}"
         category: content
         file: /Users/jholland/Desktop/panupv2-all-apps-8480-7019
     - name: Install content - op as XML
-      panos_op:
+      paloaltonetworks.panos.panos_op:
         provider: "{{ provider }}"
         cmd: >
           "<request>
@@ -37,12 +34,12 @@
         cmd_is_xml: true
     # Ideally a check here to wait for content to install, and check it was sucessful
     - name: Import software image into PAN-OS
-      panos_import:
+      paloaltonetworks.panos.panos_import:
         provider: "{{ provider }}"
         category: software
         file: /Users/jholland/Desktop/PanOS_vm-9.1.1
     - name: Install software - op as CLI
-      panos_op:
+      paloaltonetworks.panos.panos_op:
         provider: "{{ provider }}"
         cmd: "request system software install version 9.1.1"
     # Ideally a check here to wait for install, make sure it was successful, then reboot

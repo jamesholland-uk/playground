@@ -10,12 +10,9 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Add zones
-      panos_zone:
+      paloaltonetworks.panos.panos_zone:
         provider: "{{ provider }}"
         zone: "{{ 'zone%03d' | format(item) }}"
         vsys: "vsys2"

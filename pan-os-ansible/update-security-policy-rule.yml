@@ -12,9 +12,6 @@
 
     rulename: "mgmt-access"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     # Modify destination IP - Bad idea - redefine rule with just dest IP, make source IP = any
     # - name: Just provide dest IP
@@ -34,12 +31,12 @@
         rule_name: '{{ rulename }}'
       register: original_rule
 
-    - name: debug
+    - name: Debug
       ansible.builtin.debug:
         msg: '{{ original_rule }}'
 
 
-    - name: debug items
+    - name: Debug items
       ansible.builtin.debug:
         msg: '{{ item }}'
         # msg: '{{ item.name }} = {{ item.value }}'

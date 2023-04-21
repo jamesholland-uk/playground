@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("homelabrama") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("homelabrama") }}'
   connection: local
 
   vars:

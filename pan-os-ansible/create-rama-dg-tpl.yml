@@ -3,7 +3,8 @@
 # Creates Device Groups and Templates/Stacks in Panorama
 #
 
-- hosts: '{{ target | default("panorama") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("panorama") }}'
   connection: local
 
   vars:

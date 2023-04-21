@@ -10,9 +10,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create VSYS with type_cmd
       paloaltonetworks.panos.panos_type_cmd:

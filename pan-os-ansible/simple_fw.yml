@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("firewall") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:
@@ -9,24 +10,21 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
-    - name: create DMZ zone
-      panos_zone:
+    - name: Create DMZ zone
+      paloaltonetworks.panos.panos_zone:
         provider: "{{ mydevice }}"
         zone: "dmz"
         mode: "layer3"
 
-    - name: create Internet zone
-      panos_zone:
+    - name: Create Internet zone
+      paloaltonetworks.panos.panos_zone:
         provider: "{{ mydevice }}"
         zone: "internet"
         mode: "layer3"
 
-    - name: ethernet interface in zone dmz
-      panos_interface:
+    - name: Ethernet interface in zone dmz
+      paloaltonetworks.panos.panos_interface:
         provider: "{{ mydevice }}"
         if_name: "ethernet1/9"
         mode: "layer3"
@@ -35,19 +33,19 @@
         zone_name: "dmz"
 
     - name: Create object 'Object-One'
-      panos_address_object:
+      paloaltonetworks.panos.panos_address_object:
         provider: "{{ mydevice }}"
         name: "Object-One"
         value: "1.1.1.1"
 
     - name: Create service object 'ssh-tcp-22'
-      panos_service_object:
+      paloaltonetworks.panos.panos_service_object:
         provider: "{{ mydevice }}"
         name: "ssh-tcp-22"
         destination_port: "22"
 
-    - name: add SSH inbound rule
-      panos_security_rule:
+    - name: Add SSH inbound rule
+      paloaltonetworks.panos.panos_security_rule:
         provider: "{{ mydevice }}"
         rule_name: "SSH permit"
         source_zone: ["internet"]
@@ -59,5 +57,5 @@
         action: "allow"
 
     # - name: Commit the candidate configuration
-    #   panos_commit_firewall:
+    #   paloaltonetworks.panos.panos_commit_firewall:
     #     provider: "{{ mydevice }}"

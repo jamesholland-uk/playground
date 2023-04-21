@@ -31,9 +31,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Gather facts for device
       paloaltonetworks.panos.panos_facts:

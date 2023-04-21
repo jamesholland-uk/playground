@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("firewall") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:
@@ -18,17 +19,14 @@
     monitor_profile: "default"
     next_hop: "192.168.150.1"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Check if firewall is ready
       paloaltonetworks.panos.panos_check:
         provider: "{{ device }}"
       register: result
 
-    - name: pbf policy
-      panos_pbf_rule:
+    - name: PBF policy
+      paloaltonetworks.panos.panos_pbf_rule:
         provider: "{{ device }}"
         name: "the-pbf-rule"
         from_value: ["{{ from_zone }}"]

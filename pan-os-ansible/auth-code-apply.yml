@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("host_vm-series-a") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("host_vm-series-a") }}'
   connection: local
 
   vars:
@@ -8,9 +9,6 @@
       username: "{{ username | default(omit) }}"
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
-
-  collections:
-    - paloaltonetworks.panos
 
   tasks:
     - name: Activate my authcode

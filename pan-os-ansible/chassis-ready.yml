@@ -11,9 +11,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Check if PAN-OS appliance is ready
       paloaltonetworks.panos.panos_check:

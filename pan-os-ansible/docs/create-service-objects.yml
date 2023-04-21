@@ -9,9 +9,6 @@
       username: "{{ username }}"
       password: "{{ password }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create service object 'tcp-12345'
       paloaltonetworks.panos.panos_service_object:

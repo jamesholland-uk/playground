@@ -11,7 +11,7 @@
       api_key: "{{ api_key | default(omit) }}"
 
   tasks:
-    - name: Create security rule
+    - name: Create test security rule
       paloaltonetworks.panos.panos_security_rule:
         provider: "{{ device }}"
         rule_name: "Ansible test 1"

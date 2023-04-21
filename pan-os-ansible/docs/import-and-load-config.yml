@@ -11,9 +11,6 @@
 
     cfg_file: "exampleconfig.xml"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Import configuration
       paloaltonetworks.panos.panos_import:

@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("firewall") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:
@@ -9,12 +10,9 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Add static route to next VR
-      panos_static_route:
+      paloaltonetworks.panos.panos_static_route:
         provider: "{{ device }}"
         name: "Test route"
         destination: "{{ subnet }}"

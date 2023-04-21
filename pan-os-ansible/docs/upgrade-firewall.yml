@@ -9,9 +9,6 @@
       username: "{{ username }}"
       password: "{{ password }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Install target PAN-OS version
       paloaltonetworks.panos.panos_software:

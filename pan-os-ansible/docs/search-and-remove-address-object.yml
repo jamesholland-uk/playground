@@ -11,9 +11,6 @@
 
     rmadr: "test4"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     # Garfield's old blog guide: https://live.paloaltonetworks.com/t5/automation-api-blog/ansible-using-facts-modules-to-do-updates/ba-p/275173
     #

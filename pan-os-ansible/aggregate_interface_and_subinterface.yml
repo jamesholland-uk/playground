@@ -1,9 +1,6 @@
 ---
-#
-# aggregate_interface_and_subinterface - Creating aggregate interfaces and subinterfaces on a PAN-OS device via Panorama.
-#
-
-- hosts: '{{ target | default("ldnrama") }}'
+- name: PAN-OS Playbook
+  hosts: '{{ target | default("host_dash5220") }}'
   connection: local
 
   vars:
@@ -13,25 +10,46 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
-    - name: Configure aggregate interface
-      panos_aggregate_interface:
-        provider: "{{ device }}"
-        template: "pa-5060-template"
-        vsys: "vsys1" # Must be defined when targeting Panorama, or interface will not be imported into a VSYS and zone assignment will fail
-        if_name: ae2
-        zone_name: 5060_dmz
+    # - name: Configure aggregate interface via Panorama
+    #   paloaltonetworks.panos.panos_aggregate_interface:
+    #     provider: "{{ device }}"
+    #     template: "pa-5060-template"
+    #     vsys: "vsys1" # Must be defined when targeting Panorama, or interface will not be imported into a VSYS and zone assignment will fail
+    #     if_name: ae2
+    #     zone_name: 5060_dmz
 
-    - name: Configure sub-interface
-      panos_l3_subinterface:
+    # - name: Configure sub-interface via Panorama
+    #   paloaltonetworks.panos.panos_l3_subinterface:
+    #     provider: "{{ device }}"
+    #     template: "pa-5060-template"
+    #     vsys: "vsys1" # Must be defined when targeting Panorama, or interface will not be imported into a VSYS and zone assignment will fail
+    #     name: "ae2.3"
+    #     tag: 300
+    #     enable_dhcp: false
+    #     ip: ["10.1.1.1/24"]
+    #     zone_name: "5060_dmz"
+
+    - name: Configure aggregate interface direct on NGFW
+      paloaltonetworks.panos.panos_aggregate_interface:
         provider: "{{ device }}"
-        template: "pa-5060-template"
-        vsys: "vsys1" # Must be defined when targeting Panorama, or interface will not be imported into a VSYS and zone assignment will fail
-        name: "ae2.3"
-        tag: 300
-        enable_dhcp: false
-        ip: ["10.1.1.1/24"]
-        zone_name: "5060_dmz"
+        if_name: ae2
+        zone_name: inside
+        lacp_enable: true
+        lacp_fast_failover: false
+
+    - name: Configure aggregate interface direct on NGFW
+      paloaltonetworks.panos.panos_aggregate_interface:
+        provider: "{{ device }}"
+        if_name: ae3
+        mode: ha
+        lacp_enable: true
+        lacp_fast_failover: true
+
+    - name: Configure aggregate interface direct on NGFW
+      paloaltonetworks.panos.panos_aggregate_interface:
+        provider: "{{ device }}"
+        if_name: ae4
+        mode: layer2
+        lacp_enable: true
+        lacp_fast_failover: true

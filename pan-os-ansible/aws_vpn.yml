@@ -40,7 +40,8 @@
 #
 #   $ ansible-playbook -i inventory aws_vpn.yml -e vpn_id=vpn-08ef9ead262d7490f
 
-- hosts: '{{ target | default("homelabrama") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("homelabrama") }}'
   connection: local
 
   vars:
@@ -90,7 +91,7 @@
         var: test.stdout
 
     - name: Get VPN connection info
-      ec2_vpc_vpn_info:
+      community.aws.ec2_vpc_vpn_info:
         vpn_connection_ids: "{{ vpn_id }}"
       register: vpn_conn_facts
 
@@ -98,7 +99,7 @@
       ansible.builtin.debug:
         var: vpn_conn_facts
 
-    - name: set_fact
+    - name: Set_fact
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | parse_xml('spec/aws_vpn_spec.yml') }}"
 

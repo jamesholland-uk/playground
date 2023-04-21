@@ -10,9 +10,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     # - name: create l2 interface
     #   paloaltonetworks.panos.panos_interface:
@@ -22,7 +19,7 @@
     #     zone_name: "zone404"
     #     vlan_name: "vlan404"
 
-    - name: create l2 subinterface
+    - name: Create l2 subinterface
       paloaltonetworks.panos.panos_l2_subinterface:
         provider: "{{ device }}"
         name: "ethernet1/1.5"

@@ -10,18 +10,15 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Add zone
-      panos_zone:
+      paloaltonetworks.panos.panos_zone:
         provider: "{{ provider }}"
         zone: "outside"
         mode: "layer3"
 
     - name: Add eth1/1
-      panos_interface:
+      paloaltonetworks.panos.panos_interface:
         provider: "{{ provider }}"
         if_name: "ethernet1/1"
         mode: "layer3"
@@ -31,7 +28,7 @@
         vr_name: "default"
 
     - name: Add IKE gateway
-      panos_ike_gateway:
+      paloaltonetworks.panos.panos_ike_gateway:
         provider: "{{ provider }}"
         name: "ike-gw"
         interface: "ethernet1/1"
@@ -40,14 +37,14 @@
 
     # block 1: 1-200
     - name: Add tunnel.1
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.1"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block1
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-a-%03d' | format(item) }}"
         tunnel_interface: "tunnel.1"
@@ -56,7 +53,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block1
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-a-%03d' | format(item) }}"
@@ -65,14 +62,14 @@
 
     # block 2: 201-400
     - name: Add tunnel.2
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.2"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block2
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-b-%03d' | format(item) }}"
         tunnel_interface: "tunnel.2"
@@ -81,7 +78,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block2
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-b-%03d' | format(item) }}"
@@ -90,14 +87,14 @@
 
     # block 3
     - name: Add tunnel.3
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.3"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block3
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-c-%03d' | format(item) }}"
         tunnel_interface: "tunnel.3"
@@ -106,7 +103,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block3
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-c-%03d' | format(item) }}"
@@ -115,14 +112,14 @@
 
     # block 4
     - name: Add tunnel.4
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.4"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block4
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-d-%03d' | format(item) }}"
         tunnel_interface: "tunnel.4"
@@ -131,7 +128,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block4
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-d-%03d' | format(item) }}"
@@ -140,14 +137,14 @@
 
     # block 5
     - name: Add tunnel.5
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.5"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block5
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-e-%03d' | format(item) }}"
         tunnel_interface: "tunnel.5"
@@ -156,7 +153,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block5
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-e-%03d' | format(item) }}"
@@ -165,14 +162,14 @@
 
     # block 6
     - name: Add tunnel.6
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.6"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block6
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-f-%03d' | format(item) }}"
         tunnel_interface: "tunnel.6"
@@ -181,7 +178,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block6
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-f-%03d' | format(item) }}"
@@ -190,14 +187,14 @@
 
     # block 7
     - name: Add tunnel.7
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.7"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block7
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-g-%03d' | format(item) }}"
         tunnel_interface: "tunnel.7"
@@ -206,7 +203,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block7
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-g-%03d' | format(item) }}"
@@ -215,14 +212,14 @@
 
     # block 8
     - name: Add tunnel.8
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.8"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block8
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-h-%03d' | format(item) }}"
         tunnel_interface: "tunnel.8"
@@ -231,7 +228,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block8
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-h-%03d' | format(item) }}"
@@ -240,14 +237,14 @@
 
     # block 9
     - name: Add tunnel.9
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.9"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block9
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-i-%03d' | format(item) }}"
         tunnel_interface: "tunnel.9"
@@ -256,7 +253,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block9
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-i-%03d' | format(item) }}"
@@ -265,14 +262,14 @@
 
     # block 10
     - name: Add tunnel.10
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.10"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block10
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-j-%03d' | format(item) }}"
         tunnel_interface: "tunnel.10"
@@ -281,7 +278,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block10
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-j-%03d' | format(item) }}"
@@ -290,14 +287,14 @@
 
     # block 11
     - name: Add tunnel.11
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.11"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block11
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-k-%03d' | format(item) }}"
         tunnel_interface: "tunnel.11"
@@ -306,7 +303,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block11
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-k-%03d' | format(item) }}"
@@ -315,14 +312,14 @@
 
     # block 12
     - name: Add tunnel.12
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.12"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block12
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-l-%03d' | format(item) }}"
         tunnel_interface: "tunnel.12"
@@ -331,7 +328,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block12
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-l-%03d' | format(item) }}"
@@ -340,14 +337,14 @@
 
     # block 13
     - name: Add tunnel.13
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.13"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block13
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-m-%03d' | format(item) }}"
         tunnel_interface: "tunnel.13"
@@ -356,7 +353,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block13
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-m-%03d' | format(item) }}"
@@ -365,14 +362,14 @@
 
     # block 14
     - name: Add tunnel.14
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.14"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block14
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-n-%03d' | format(item) }}"
         tunnel_interface: "tunnel.14"
@@ -381,7 +378,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block14
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-n-%03d' | format(item) }}"
@@ -390,14 +387,14 @@
 
     # block 15
     - name: Add tunnel.15
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.15"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block15
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-o-%03d' | format(item) }}"
         tunnel_interface: "tunnel.15"
@@ -406,7 +403,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block15
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-o-%03d' | format(item) }}"
@@ -415,14 +412,14 @@
 
     # block 16
     - name: Add tunnel.16
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.16"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block16
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-p-%03d' | format(item) }}"
         tunnel_interface: "tunnel.16"
@@ -431,7 +428,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block16
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-p-%03d' | format(item) }}"
@@ -440,14 +437,14 @@
 
     # block 17
     - name: Add tunnel.17
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.17"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block17
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-q-%03d' | format(item) }}"
         tunnel_interface: "tunnel.17"
@@ -456,7 +453,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block17
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-q-%03d' | format(item) }}"
@@ -465,14 +462,14 @@
 
     # block 18
     - name: Add tunnel.18
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.18"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block18
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-r-%03d' | format(item) }}"
         tunnel_interface: "tunnel.18"
@@ -481,7 +478,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block18
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-r-%03d' | format(item) }}"
@@ -490,14 +487,14 @@
 
     # block 19
     - name: Add tunnel.19
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.19"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block19
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-s-%03d' | format(item) }}"
         tunnel_interface: "tunnel.19"
@@ -506,7 +503,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block19
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-s-%03d' | format(item) }}"
@@ -515,14 +512,14 @@
 
     # block 20
     - name: Add tunnel.20
-      panos_tunnel:
+      paloaltonetworks.panos.panos_tunnel:
         provider: "{{ provider }}"
         if_name: "tunnel.20"
         zone_name: "outside"
         vr_name: "default"
 
     - name: Add IPSec tunnels - block20
-      panos_ipsec_tunnel:
+      paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ provider }}"
         name: "{{ 'autovpn-t-%03d' | format(item) }}"
         tunnel_interface: "tunnel.20"
@@ -531,7 +528,7 @@
       loop: "{{ range(0, 200, 1) | list }}"
 
     - name: Add IPSec IPv4 Proxy IDs - block20
-      panos_ipsec_ipv4_proxyid:
+      paloaltonetworks.panos.panos_ipsec_ipv4_proxyid:
         provider: "{{ provider }}"
         name: "{{ 'proxyID%03d' | format(item) }}"
         tunnel_name: "{{ 'autovpn-t-%03d' | format(item) }}"

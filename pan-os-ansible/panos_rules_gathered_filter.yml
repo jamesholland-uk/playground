@@ -10,9 +10,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Get all security rules
       paloaltonetworks.panos.panos_security_rule:

@@ -1,5 +1,5 @@
 ---
-- name: Clone address object using gathered
+- name: Address objects with a loop
   hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
@@ -11,18 +11,20 @@
       api_key: "{{ api_key | default(omit) }}"
 
   tasks:
-    - name: Gather config
+    - name: Create address object with tag
       paloaltonetworks.panos.panos_address_object:
         provider: '{{ device }}'
-        state: 'gathered'
-        name: 'addr-obj-one'
-      register: orig
+        address_type: "ip-netmask"
+        description: "From Ansible"
+        name: "192.168.0.1"
+        tag: ["tag-one"]
+        value: "192.168.0.1/32"
 
-    - name: Clone
+    - name: Create address object no tags
       paloaltonetworks.panos.panos_address_object:
         provider: '{{ device }}'
-        name: 'addr-obj-two'
-        value: '{{ orig.gathered.value }}'
-        address_type: '{{ orig.gathered.address_type }}'
-        description: '{{ orig.gathered.description }}'
-        tag: '{{ orig.gathered.tag }}'
+        address_type: "ip-netmask"
+        description: "From Ansible"
+        name: "192.168.0.1"
+        tag: []
+        value: "192.168.0.1/32"

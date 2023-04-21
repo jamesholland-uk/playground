@@ -11,9 +11,6 @@
 
     csv_filename: "../test.csv"
 
-  collections:
-    - paloaltonetworks.panos
-
   #
   # Format of CSV file for this example playbook
   #
@@ -26,7 +23,7 @@
 
   tasks:
     - name: Read CSV file
-      ansible.builtin.read_csv:
+      community.general.read_csv:
         path: "{{ csv_filename }}"
         key: hostname
       register: csv_data

@@ -25,9 +25,6 @@
         "value": "192.168.0.2/32"
       }
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create address objects
       paloaltonetworks.panos.panos_address_object:

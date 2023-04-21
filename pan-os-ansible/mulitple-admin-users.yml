@@ -5,7 +5,8 @@
 # Usage:  $ ansible-playbook -i inventory multiple-admin-users.yml -e @creds.yml
 #
 
-- hosts: '{{ target | default("awsrama") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("awsrama") }}'
   connection: local
 
   vars:

@@ -13,9 +13,6 @@
       - { name: ethernet1/7, mode: layer3, enable_dhcp: true, create_default_route: true, ipv6_enabled: false, zone_name: External }
       - { name: ethernet1/8, mode: layer2, vlan_name: Management, lldp_enabled: false, zone_name: VLANs }
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create interfaces
       paloaltonetworks.panos.panos_interface:

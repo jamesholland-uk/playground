@@ -9,9 +9,6 @@
       username: "{{ username }}"
       password: "{{ password }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create new Virtual Router
       paloaltonetworks.panos.panos_virtual_router:

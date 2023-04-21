@@ -14,9 +14,6 @@
     software_version: "10.1.8"
     reboot_firewall: false
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Import content file into PAN-OS
       paloaltonetworks.panos.panos_import:

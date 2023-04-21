@@ -5,7 +5,8 @@
 # Usage: $ ansible-playbook -i inventory op-cmd-keys.yml -e @creds.yml
 #
 
-- hosts: '{{ target | default("panorama") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("panorama") }}'
   connection: local
 
   vars:

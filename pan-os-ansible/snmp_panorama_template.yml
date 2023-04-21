@@ -10,9 +10,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create SNMP v2c Server profile
       paloaltonetworks.panos.panos_type_cmd:

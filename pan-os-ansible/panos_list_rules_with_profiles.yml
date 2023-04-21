@@ -20,7 +20,8 @@
 #
 #   $ ansible-playbook -i inventory panos_list_rules_with_profiles.yml
 
-- hosts: '{{ target | default("firewall") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("firewall") }}'
   connection: local
 
   vars:

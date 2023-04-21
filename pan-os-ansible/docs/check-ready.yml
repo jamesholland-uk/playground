@@ -10,9 +10,6 @@
       username: "{{ username }}"
       password: "{{ password }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Check if PAN-OS appliance is ready and wait until it is
       paloaltonetworks.panos.panos_check:

@@ -10,13 +10,10 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Commit candidate configuration
       # This module just covers commit of Panorama config from candidate to running, not push of config to managed devices
-      panos_commit_panorama:
+      paloaltonetworks.panos.panos_commit_panorama:
         provider: "{{ device }}"
       register: results
     - name: Print output

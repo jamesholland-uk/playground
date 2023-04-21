@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target | default("host_labfw") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("host_labfw") }}'
   connection: local
 
   vars:

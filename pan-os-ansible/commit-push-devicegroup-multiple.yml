@@ -11,13 +11,10 @@
       api_key: "{{ api_key | default(omit) }}"
     devicegroups: ["poc-dg", "hq-dg"]
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Commit and Push Device Group
       # This module just covers push of config to managed devices, not commit of Panorama config from candidate to running
-      panos_commit_push:
+      paloaltonetworks.panos.panos_commit_push:
         provider: "{{ device }}"
         style: "device group"
         name: "{{ item }}"

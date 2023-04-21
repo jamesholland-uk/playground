@@ -9,9 +9,6 @@
       username: "{{ username }}"
       password: "{{ password }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Create source address object
       paloaltonetworks.panos.panos_address_object:

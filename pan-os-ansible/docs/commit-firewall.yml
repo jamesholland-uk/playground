@@ -9,9 +9,6 @@
       username: "{{ username }}"
       password: "{{ password }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Commit candidate configuration
       paloaltonetworks.panos.panos_commit_firewall:

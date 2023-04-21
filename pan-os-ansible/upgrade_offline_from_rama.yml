@@ -13,9 +13,6 @@
     sw_version: "PanOS_vm-10.2.2"
     reboot_firewall: false
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Upload software file to firewall from Panorama
       paloaltonetworks.panos.panos_op:

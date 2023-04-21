@@ -10,9 +10,6 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-  collections:
-    - paloaltonetworks.panos
-
   tasks:
     - name: Commit candidate configuration
       paloaltonetworks.panos.panos_commit_firewall:

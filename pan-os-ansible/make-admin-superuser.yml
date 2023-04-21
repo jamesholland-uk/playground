@@ -5,7 +5,8 @@
 # Example usage: ansible-playbook -i inventory make-admin-superuser.yml -e "admin_user=alice"
 #
 
-- hosts: '{{ target | default("homelabrama") }}'
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("homelabrama") }}'
   connection: local
 
   vars:
