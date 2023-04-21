@@ -12,10 +12,11 @@ jobs:
       - name: Install Ansible
         run: sudo apt install ansible -y
 
-      - name: Install PAN-OS collection
-        run: |
-         ansible-galaxy collection install paloaltonetworks.panos
-         ansible-config dump | grep DEFAULT_MODULE_PATH
+      - name: Install CollectionsRequirements
+        run: ansible-galaxy collection install -r collections/requirements.yml
+
+      - name: Install CollectionsRequirements
+        run: pip3 install --user -r requirements.txt
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint-action@v6

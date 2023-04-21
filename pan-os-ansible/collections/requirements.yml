@@ -1,3 +1,4 @@
 ---
 collections:
   - paloaltonetworks.panos
+  - community.general
