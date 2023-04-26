@@ -1,0 +1,164 @@
+---
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+    server_profile_name_decrypt: 'decrypt-http-server-profile'
+    server_profile_name_gp: 'gp-http-server-profile'
+
+  tasks:
+    # Traffic logs
+
+    # - name: Create a HTTP Server Profile
+    #   paloaltonetworks.panos.panos_http_profile:
+    #     provider: '{{ device }}'
+    #     name: '{{ server_profile_name }}'
+    #     traffic_name: 'traffic-logs-to-eda'
+    #     traffic_uri_format: 'https://test'
+    #     traffic_payload: '$test'
+
+    # - name: Create http server
+    #   paloaltonetworks.panos.panos_http_server:
+    #     provider: '{{ device }}'
+    #     http_profile: '{{ server_profile_name }}'
+    #     name: 'my-http-server'
+    #     address: '192.168.1.5'
+    #     http_method: 'GET'
+
+    # - name: Add a HTTP header to HTTP Server Profile
+    #   paloaltonetworks.panos.panos_http_profile_header:
+    #     provider: '{{ device }}'
+    #     http_profile: '{{ server_profile_name }}'
+    #     log_type: 'traffic'
+    #     header: 'Content-Type'
+    #     value: 'application/json'
+
+    # - name: Add a param to the config log type
+    #   paloaltonetworks.panos.panos_http_profile_param:
+    #     provider: '{{ device }}'
+    #     http_profile: '{{ server_profile_name }}'
+    #     log_type: 'traffic'
+    #     param: 'serial'
+    #     value: '$serial'
+
+    # Decryption Logs
+
+    - name: Create a HTTP Server Profile for Decyption Logs
+      paloaltonetworks.panos.panos_http_profile:
+        provider: '{{ device }}'
+        name: '{{ server_profile_name_decrypt }}'
+        decryption_name: 'decryption-logs-to-eda'
+        decryption_uri_format: 'https://test'
+        decryption_payload: >
+          {
+              "category": "network",
+              "details": {
+                  "action": "$action",
+                  "app": "$app",
+                  "cn": "$cn",
+                  "dst": "$dst",
+                  "device_name": "$device_name",
+                  "error": "$error",
+                  "issuer_cn": "$issuer_cn",
+                  "root_cn": "$root_cn",
+                  "root_status": "$root_status",
+                  "sni": "$sni",
+                  "src": "$src",
+                  "srcuser": "$srcuser"
+              },
+              "receive_time": "$receive_time",
+              "rule": "$rule",
+              "rule_uuid": "$rule_uuid",
+              "serial": "$serial",
+              "sessionid": "$sessionid",
+              "severity": "informational",
+              "type": "decryption"
+          }
+
+    - name: Create http server
+      paloaltonetworks.panos.panos_http_server:
+        provider: '{{ device }}'
+        http_profile: '{{ server_profile_name_decrypt }}'
+        name: 'my-http-server'
+        address: '192.168.1.5'
+        http_method: 'GET'
+
+    - name: Add a HTTP header to HTTP Server Profile
+      paloaltonetworks.panos.panos_http_profile_header:
+        provider: '{{ device }}'
+        http_profile: '{{ server_profile_name_decrypt }}'
+        log_type: 'decryption'
+        header: 'Content-Type'
+        value: 'application/json'
+
+    - name: Add a param to the config log type
+      paloaltonetworks.panos.panos_http_profile_param:
+        provider: '{{ device }}'
+        http_profile: '{{ server_profile_name_decrypt }}'
+        log_type: 'decryption'
+        param: 'serial'
+        value: '$serial'
+
+    # GlobalProtect Logs
+
+    - name: Create a HTTP Server Profile for GlobalProtect Logs
+      paloaltonetworks.panos.panos_http_profile:
+        provider: '{{ device }}'
+        name: '{{ server_profile_name_gp }}'
+        globalprotect_name: 'globalprotect-logs-to-eda'
+        globalprotect_uri_format: 'https://test'
+        globalprotect_payload: >
+          {
+              "category": "network",
+              "details": {
+                  "action": "$action",
+                  "app": "$app",
+                  "cn": "$cn",
+                  "dst": "$dst",
+                  "device_name": "$device_name",
+                  "error": "$error",
+                  "issuer_cn": "$issuer_cn",
+                  "root_cn": "$root_cn",
+                  "root_status": "$root_status",
+                  "sni": "$sni",
+                  "src": "$src",
+                  "srcuser": "$srcuser"
+              },
+              "receive_time": "$receive_time",
+              "rule": "$rule",
+              "rule_uuid": "$rule_uuid",
+              "serial": "$serial",
+              "sessionid": "$sessionid",
+              "severity": "informational",
+              "type": "decryption"
+          }
+
+    - name: Create http server
+      paloaltonetworks.panos.panos_http_server:
+        provider: '{{ device }}'
+        http_profile: '{{ server_profile_name_gp }}'
+        name: 'my-http-server'
+        address: '192.168.1.5'
+        http_method: 'GET'
+
+    - name: Add a HTTP header to HTTP Server Profile
+      paloaltonetworks.panos.panos_http_profile_header:
+        provider: '{{ device }}'
+        http_profile: '{{ server_profile_name_gp }}'
+        log_type: 'globalprotect'
+        header: 'Content-Type'
+        value: 'application/json'
+
+    - name: Add a param to the config log type
+      paloaltonetworks.panos.panos_http_profile_param:
+        provider: '{{ device }}'
+        http_profile: '{{ server_profile_name_gp }}'
+        log_type: 'globalprotect'
+        param: 'serial'
+        value: '$serial'
