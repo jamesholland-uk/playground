@@ -16,18 +16,15 @@ provider "panos" {
 }
 
 variable "panos_hostname" {
-  type    = string
-  default = "rama.jamoi.xyz"
+  type = string
 }
 
 variable "panos_username" {
-  type    = string
-  default = "admin"
+  type = string
 }
 
 variable "panos_password" {
-  type    = string
-  default = "Commit123!"
+  type = string
 }
 
 # Create a Device Group
