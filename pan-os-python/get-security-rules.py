@@ -4,8 +4,8 @@ from panos.policies import PreRulebase, PostRulebase, SecurityRule
 
 ######## Panorama connectivity ###########
 api_user = "admin"
-api_password = "Commit123!"
-host = "rama.jamoi.xyz"
+api_password = "admin"
+host = "panorama.local"
 pano = Panorama(host, api_user, api_password)
 
 ##### Pull security rules from Shared ########
