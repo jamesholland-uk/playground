@@ -1,3 +1,10 @@
+## [1.3.0](https://github.com/jamesholland-uk/playground/compare/v1.2.0...v1.3.0) (2023-04-27)
+
+
+### Features
+
+* System info playbook ([9cd2b77](https://github.com/jamesholland-uk/playground/commit/9cd2b77784e6b36591a585c8fa5b17d7b60c9dce))
+
 ## [1.2.0](https://github.com/jamesholland-uk/playground/compare/v1.1.0...v1.2.0) (2023-04-06)
 
 
