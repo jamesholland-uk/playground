@@ -23,3 +23,7 @@ repos:
     rev: v1.77.0
     hooks:
       - id: terraform_fmt
+  - repo: https://github.com/mattlqx/pre-commit-search-and-replace
+    rev: v1.0.5
+    hooks:
+    - id: search-and-replace
