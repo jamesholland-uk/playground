@@ -30,4 +30,4 @@
         format: 'pkcs12'
         filename: 'local-ca.p12'
         passphrase: "{{ passphrase }}"
-        block_private_key: "yes"
+        block_private_key_export: true
