@@ -40,3 +40,4 @@ exampleconfig.xml
 auth*.json
 ssh_private_key.pem
 *.p12
+localhost.yml
