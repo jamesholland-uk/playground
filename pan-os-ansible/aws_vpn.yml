@@ -41,7 +41,7 @@
 #   $ ansible-playbook -i inventory aws_vpn.yml -e vpn_id=vpn-08ef9ead262d7490f
 
 - name: Palo Alto Networks Playbook
-  hosts: '{{ target | default("homelabrama") }}'
+  hosts: '{{ target | default("vmseries-11dot0") }}'
   connection: local
 
   vars:
@@ -51,8 +51,8 @@
       password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
-    template: "test-tpl"
-    template_stack: "test-tpl-stack"
+    template: "lab-vm-series"
+    template_stack: "lab-vm-series-stack"
     untrust_interface: "ethernet1/1"
     trust_interface: "ethernet1/2"
     tunnel_if_1: "tunnel.10"
@@ -64,6 +64,9 @@
     peer_group: "AmazonBGP"
     redist_profile: "Export_to_Amazon"
     redist_priority: 2
+
+    # AWS VPN ID e.g. vpn-01234567890123456789
+    vpn_id: "vpn-0ea446d8b0d2a2974"
 
     # AWS VPN default settings
     ike_settings:
@@ -83,12 +86,12 @@
       ansible.builtin.command: "{{ ansible_python_interpreter | default('/usr/bin/python') }} -c 'import {{ module }}; print({{ module }}.__version__)'"
       vars:
         module: boto3
-      register: test
+      register: my_output
       changed_when: my_output != 0
 
     - name: Check stdout
       ansible.builtin.debug:
-        var: test.stdout
+        var: my_output.stdout
 
     - name: Get VPN connection info
       community.aws.ec2_vpc_vpn_info:
@@ -103,10 +106,14 @@
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | parse_xml('spec/aws_vpn_spec.yml') }}"
 
+    - name: Check parsed VPN facts
+      ansible.builtin.debug:
+        var: parsed
+
     - name: Create IKE crypto profiles
       paloaltonetworks.panos.panos_ike_crypto_profile:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ item }}"
         dhgroup: "{{ ike_settings.dhgroup }}"
         authentication: "{{ ike_settings.authentication }}"
@@ -120,7 +127,7 @@
     - name: Create IKE gateways
       paloaltonetworks.panos.panos_ike_gateway:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ item.name }}"
         protocol_version: "ikev1"
         interface: "{{ untrust_interface }}"
@@ -132,6 +139,7 @@
         ikev1_exchange_mode: "main"
         crypto_profile_name: "{{ item.crypto_profile_name }}"
         enable_passive_mode: "no"
+        # NAT traversal
         commit: false
       with_items:
         - name: "ike-{{ vpn_id }}-0"
@@ -146,7 +154,7 @@
     - name: Create IPsec profiles
       paloaltonetworks.panos.panos_ipsec_profile:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ item }}"
         dhgroup: "{{ ipsec_settings.dhgroup }}"
         authentication: "{{ ipsec_settings.authentication }}"
@@ -160,10 +168,10 @@
     - name: Create tunnel interfaces
       paloaltonetworks.panos.panos_tunnel:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         if_name: "{{ item.if_name }}"
         ip: "{{ item.ip }}/30"
-        management_profile: "Ping"
+        # management_profile: "Ping"
         mtu: "{{ item.mtu }}"
         zone_name: "{{ item.zone_name }}"
         vr_name: "{{ item.vr_name }}"
@@ -183,7 +191,7 @@
     - name: Create IPsec tunnels
       paloaltonetworks.panos.panos_ipsec_tunnel:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ item.name }}"
         tunnel_interface: "{{ item.tunnel_interface }}"
         ike_gtw_name: "{{ item.ike_gtw_name }}"
@@ -207,7 +215,7 @@
     - name: Configure BGP
       paloaltonetworks.panos.panos_bgp:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         vr_name: "{{ vr_name }}"
         local_as: "{{ local_as }}"
         router_id: "{{ router_id }}"
@@ -217,7 +225,7 @@
     - name: Create BGP peer group
       paloaltonetworks.panos.panos_bgp_peer_group:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ peer_group }}"
         vr_name: "{{ vr_name }}"
         commit: false
@@ -225,7 +233,7 @@
     - name: Create BGP peers
       paloaltonetworks.panos.panos_bgp_peer:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         peer_group: "{{ peer_group }}"
         name: "{{ item.name }}"
         local_interface: "{{ item.local_interface }}"
@@ -248,7 +256,7 @@
     - name: Create redistribution profile
       paloaltonetworks.panos.panos_redistribution:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ redist_profile }}"
         priority: "{{ redist_priority }}"
         vr_name: "{{ vr_name }}"
@@ -260,18 +268,22 @@
     - name: Add BGP redistribution
       paloaltonetworks.panos.panos_bgp_redistribute:
         provider: "{{ device }}"
-        template: "{{ template }}"
+        # template: "{{ template }}"
         name: "{{ redist_profile }}"
         vr_name: "{{ vr_name }}"
         commit: false
 
-    - name: Commit configuration
-      paloaltonetworks.panos.panos_commit_panorama:
-        provider: "{{ device }}"
-        templates: ["{{ template }}"]
+    # - name: Commit configuration
+    #   paloaltonetworks.panos.panos_commit_panorama:
+    #     provider: "{{ device }}"
+    #     templates: ["{{ template }}"]
 
-    - name: Commit and Push template configuration
-      paloaltonetworks.panos.panos_commit_push:
+    # - name: Commit and Push template configuration
+    #   paloaltonetworks.panos.panos_commit_push:
+    #     provider: "{{ device }}"
+    #     style: "template stack"
+    #     name: "{{ template_stack }}"
+
+    - name: Commit configuration
+      paloaltonetworks.panos.panos_commit_firewall:
         provider: "{{ device }}"
-        style: "template stack"
-        name: "{{ template_stack }}"
