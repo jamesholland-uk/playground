@@ -67,6 +67,7 @@
 
     # AWS VPN ID e.g. vpn-01234567890123456789
     vpn_id: "vpn-0ea446d8b0d2a2974"
+    # region: "us-east-2"
 
     # AWS VPN default settings
     ike_settings:
@@ -95,6 +96,7 @@
 
     - name: Get VPN connection info
       community.aws.ec2_vpc_vpn_info:
+        region: "{{ region }}"
         vpn_connection_ids: "{{ vpn_id }}"
       register: vpn_conn_facts
 
