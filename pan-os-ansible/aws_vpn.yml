@@ -104,9 +104,27 @@
       ansible.builtin.debug:
         var: vpn_conn_facts
 
+    - name: Debug
+      ansible.builtin.command: pwd
+      register: output
+      changed_when: output.rc != 0
+
+    - name: Test3
+      ansible.builtin.debug:
+        msg: "{{ output }}"
+
+    - name: Debug
+      ansible.builtin.command: ls -las
+      register: output
+      changed_when: output.rc != 0
+
+    - name: Test3
+      ansible.builtin.debug:
+        msg: "{{ output }}"
+
     - name: Set_fact
       ansible.builtin.set_fact:
-        parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | parse_xml('spec/aws_vpn_spec.yml') }}"
+        parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml('spec/aws_vpn_spec.yml') }}"
 
     - name: Check parsed VPN facts
       ansible.builtin.debug:
