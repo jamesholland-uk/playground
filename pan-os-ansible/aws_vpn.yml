@@ -131,6 +131,10 @@
       ansible.builtin.debug:
         msg: "{{ output }}"
 
+    - name: print current playbook directory
+      ansible.builtin.debug:
+            var: playbook_dir
+
     - name: Set_fact
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml('spec/aws_vpn_spec.yml') }}"
