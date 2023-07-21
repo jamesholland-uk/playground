@@ -122,14 +122,14 @@
       ansible.builtin.debug:
         msg: "{{ output }}"
 
-    - name: Debug
-      ansible.builtin.command: ls -las spec/
-      register: output
-      changed_when: output.rc != 0
+    # - name: Debug
+    #   ansible.builtin.command: ls -las spec/
+    #   register: output
+    #   changed_when: output.rc != 0
 
-    - name: Test3
-      ansible.builtin.debug:
-        msg: "{{ output }}"
+    # - name: Test3
+    #   ansible.builtin.debug:
+    #     msg: "{{ output }}"
 
     - name: print current playbook directory
       ansible.builtin.debug:
