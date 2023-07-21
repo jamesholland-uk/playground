@@ -1,46 +1,5 @@
 ---
-# aws_vpn.yml - Create VPN connection with AWS private VPC.
-#
-# Description
-# ===========
-#
-# Creates the VPN tunnel and BGP configuration to establish a VPN connection with an AWS private VPC.  This playbook
-# uses the 'ec2_vpc_vpn_info' module to pull the VPN configuration.
-#
-# This playbook requires connection details for the device to be specified in the variables 'ip_address', 'username',
-# and 'password'.  These may be defined as host variables (see `host_vars/firewall.yml` for an example) or
-# extra vars.
-#
-# This playbook requires the AWS VPN id to be specified in the 'vpn_id' variable.
-#
-#
-# Required Python modules
-# =======================
-#
-# boto3
-#
-# Modules Used
-# ============
-#
-# ec2_vpc_vpn_info - https://docs.ansible.com/ansible/latest/modules/ec2_vpc_vpn_info_module.html
-# panos_ike_crypto_profile - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ike_crypto_profile_module.html
-# panos_ike_gateway - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ike_gateway_module.html
-# panos_ipsec_profile - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ipsec_profile_module.html
-# panos_tunnel - https://ansible-pan.readthedocs.io/en/latest/modules/panos_tunnel_module.html
-# panos_ipsec_tunnel - https://ansible-pan.readthedocs.io/en/latest/modules/panos_ipsec_tunnel_module.html
-# panos_bgp - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_module.html
-# panos_bgp_peer_group - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_peer_group_module.html
-# panos_bgp_peer - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_peer_module.html
-# panos_redistribution - https://ansible-pan.readthedocs.io/en/latest/modules/panos_redistribution_module.html
-# panos_bgp_redistribute - https://ansible-pan.readthedocs.io/en/latest/modules/panos_bgp_redistribute_module.html
-# panos_commit - https://ansible-pan.readthedocs.io/en/latest/modules/panos_commit_module.html
-#
-# Usage
-# =====
-#
-#   $ ansible-playbook -i inventory aws_vpn.yml -e vpn_id=vpn-08ef9ead262d7490f
-
-- name: Palo Alto Networks Playbook
+- name: Playbook
   hosts: '{{ target | default("vmseries-11dot0") }}'
   connection: local
 
@@ -67,9 +26,7 @@
     redist_profile: "Export_to_Amazon"
     redist_priority: 2
 
-    # AWS VPN ID e.g. vpn-01234567890123456789
     vpn_id: "vpn-0ea446d8b0d2a2974"
-    # region: "us-east-2"
 
     # AWS VPN default settings
     ike_settings:
@@ -85,83 +42,19 @@
       lifetime_seconds: "28800"
 
   tasks:
-    # - name: Checking modules etc
-    #   ansible.builtin.command: "{{ ansible_python_interpreter | default('/usr/bin/python') }} -c 'import {{ module }}; print({{ module }}.__version__)'"
-    #   vars:
-    #     module: boto3
-    #   register: my_output
-    #   changed_when: my_output != 0
-
-    # - name: Check stdout
-    #   ansible.builtin.debug:
-    #     var: my_output.stdout
-
-    - name: Gather facts for device
-      paloaltonetworks.panos.panos_facts:
+    - name: Check if PAN-OS is ready
+      paloaltonetworks.panos.panos_check:
         provider: "{{ device }}"
 
-    - name: Display information
-      ansible.builtin.debug:
-        msg:
-          - "Hostname: {{ ansible_facts['net_hostname'] }}"
-          - "Serial: {{ ansible_facts['net_serial'] }}"
-          - "Model: {{ ansible_facts['net_model'] }}"
-          - "Version: {{ ansible_facts['net_version'] }}"
-          - "Uptime: {{ ansible_facts['net_uptime'] }}"
-          - "HA Enabled: {{ ansible_facts['net_ha_enabled'] }}"
-          - "HA Type: {{ ansible_facts['net_ha_localmode'] }}"
-          - "HA Status: {{ ansible_facts['net_ha_localstate'] }}"
-          - "Multi-VSYS: {{ ansible_facts['net_multivsys'] }}"
-          - "{{ ansible_facts['net_session_usage'] }} out of {{ ansible_facts['net_session_max'] }} sessions in use"
-
-    - name: Get VPN connection info
+    - name: Get AWS VPN connection info
       community.aws.ec2_vpc_vpn_info:
         region: "{{ region }}"
         vpn_connection_ids: "{{ vpn_id }}"
       register: vpn_conn_facts
 
-    - name: Check VPN facts
-      ansible.builtin.debug:
-        var: vpn_conn_facts
-
-    - name: Debug
-      ansible.builtin.command: pwd
-      register: output
-      changed_when: output.rc != 0
-
-    - name: Test1
-      ansible.builtin.debug:
-        msg: "{{ output }}"
-
-    - name: Debug
-      ansible.builtin.command: ls -las
-      register: output
-      changed_when: output.rc != 0
-
-    - name: Test2
-      ansible.builtin.debug:
-        msg: "{{ output }}"
-
-    # - name: Debug
-    #   ansible.builtin.command: ls -las spec/
-    #   register: output
-    #   changed_when: output.rc != 0
-
-    # - name: Test3
-    #   ansible.builtin.debug:
-    #     msg: "{{ output }}"
-
-    - name: Print current playbook directory
-      ansible.builtin.debug:
-        var: playbook_dir
-
-    - name: Set_fact
+    - name: Parse AWS VPN connection info
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml(path_to_spec) }}"
-
-    - name: Check parsed VPN facts
-      ansible.builtin.debug:
-        var: parsed
 
     - name: Create IKE crypto profiles
       paloaltonetworks.panos.panos_ike_crypto_profile:
@@ -192,7 +85,7 @@
         ikev1_exchange_mode: "main"
         crypto_profile_name: "{{ item.crypto_profile_name }}"
         enable_passive_mode: "no"
-        # NAT traversal
+        enable_nat_traversal: true
         commit: false
       with_items:
         - name: "ike-{{ vpn_id }}-0"
@@ -224,7 +117,6 @@
         # template: "{{ template }}"
         if_name: "{{ item.if_name }}"
         ip: "{{ item.ip }}/30"
-        # management_profile: "Ping"
         mtu: "{{ item.mtu }}"
         zone_name: "{{ item.zone_name }}"
         vr_name: "{{ item.vr_name }}"
