@@ -90,6 +90,10 @@
       ansible.builtin.debug:
         var: vpn_conn_facts
 
+    - name: Set vpn_id fact
+      ansible.builtin.set_fact:
+        vpn_id: "{{ created_vpn.vpn_connection_id }}"
+
     - name: Parse AWS VPN connection details
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml(path_to_spec) }}"
