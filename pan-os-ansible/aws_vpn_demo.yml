@@ -28,27 +28,27 @@
 
     # template: "lab-vm-series"
     # template_stack: "lab-vm-series-stack"
-    ##external_interface: "ethernet1/1"
-    ##inside_interface: "ethernet1/2"
-    ##tunnel_if_1: "tunnel.10"
-    ##tunnel_if_2: "tunnel.11"
-    ##vpn_zone_name: "vpn"
-    ##inside_zone_name: "local"
-    ##vr_name: "default"
-    ##bgp_as: "65000"
-    ##router_id: "10.0.0.10"
-    ##peer_group: "AmazonBGP"
-    ##redist_profile: "Export_to_Amazon"
-    ##bgp_redist_priority: 2
+    # #external_interface: "ethernet1/1"
+    # #inside_interface: "ethernet1/2"
+    # #tunnel_if_1: "tunnel.10"
+    # #tunnel_if_2: "tunnel.11"
+    # #vpn_zone_name: "vpn"
+    # #inside_zone_name: "local"
+    # #vr_name: "default"
+    # #bgp_as: "65000"
+    # #router_id: "10.0.0.10"
+    # #peer_group: "AmazonBGP"
+    # #redist_profile: "Export_to_Amazon"
+    # #bgp_redist_priority: 2
 
-    ##vpn_id: "vpn-0ea446d8b0d2a2974"
+    # #vpn_id: "vpn-0ea446d8b0d2a2974"
 
     #######
     # vpc_id: "vpc-64e9520f"
-    ##vpc_id: "vpc-04297b5780fc53709"
-    ##project_name: "prepcheck"
-    ##cpe_ip_address: "34.89.0.242"
-    ##region: "us-east-2"
+    # #vpc_id: "vpc-04297b5780fc53709"
+    # #project_name: "prepcheck"
+    # #cpe_ip_address: "34.89.0.242"
+    # #region: "us-east-2"
     #######
 
   tasks:
