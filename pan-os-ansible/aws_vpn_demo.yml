@@ -58,12 +58,14 @@
 
     - name: Create AWS Virtual Gateway
       community.aws.ec2_vpc_vgw:
+        region: "{{ region }}"
         vpc_id: "{{ vpc_id }}"
         name: "{{ project_name }}_vgw"
       register: created_vgw
 
     - name: Create AWS Customer Gateway
       community.aws.ec2_customer_gateway:
+        region: "{{ region }}"
         name: "{{ project_name }}_cgw"
         bgp_asn: "{{ bgp_as }}"
         ip_address: "{{ cpe_ip_address }}"
@@ -71,6 +73,7 @@
 
     - name: Create AWS VPN connection
       community.aws.ec2_vpc_vpn:
+        region: "{{ region }}"
         vpn_gateway_id: "{{ created_vgw.vgw.id }}"
         customer_gateway_id: "{{ created_cgw.gateway.customer_gateway.customer_gateway_id }}"
         tags:
