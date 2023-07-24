@@ -249,7 +249,7 @@
         provider: "{{ device }}"
         # template: "{{ template }}"
         name: "{{ project_name }}_redist_profile"
-        priority: "{{ redist_priority }}"
+        priority: "{{ bgp_redist_priority }}"
         vr_name: "{{ vr_name }}"
         filter_type: "connect"
         filter_interface: "{{ inside_interface }}"
