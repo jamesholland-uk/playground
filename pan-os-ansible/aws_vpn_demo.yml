@@ -86,9 +86,9 @@
         vpn_connection_ids: "{{ created_vpn.vpn_connection_id }}"
       register: vpn_conn_facts
 
-    - name: Check VPN facts
-      ansible.builtin.debug:
-        var: vpn_conn_facts
+    # - name: Check VPN facts
+    #   ansible.builtin.debug:
+    #     var: vpn_conn_facts
 
     - name: Set vpn_id fact
       ansible.builtin.set_fact:
@@ -98,9 +98,9 @@
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml(path_to_spec) }}"
 
-    - name: Check parsed VPN facts
-      ansible.builtin.debug:
-        var: parsed
+    # - name: Check parsed VPN facts
+    #   ansible.builtin.debug:
+    #     var: parsed
 
     - name: Create IKE crypto profiles
       paloaltonetworks.panos.panos_ike_crypto_profile:
