@@ -80,6 +80,20 @@
           Name: "{{ project_name }}_vpn"
       register: created_vpn
 
+    - name: Gather info for VPC route table
+      amazon.aws.ec2_vpc_route_table_info:
+        filters:
+          vpc-id: "{{ vpc_id }}"
+      register: the_routetables
+
+    - name: Add propagation for VPN VGW to route table
+      amazon.aws.ec2_vpc_route_table:
+        vpc_id: "{{ vpc_id }}"
+        lookup: id
+        route_table_id: "{{ the_routetables.route_tables[0].id }}"
+        propagating_vgw_ids: "{{ vgw_id }}"
+      register: the_rt
+
     - name: Get AWS VPN connection details
       community.aws.ec2_vpc_vpn_info:
         region: "{{ region }}"
