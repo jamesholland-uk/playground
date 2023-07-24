@@ -171,12 +171,12 @@
         - if_name: "{{ tunnel_if_1 }}"
           ip: "{{ parsed.aws_vpn[0].tunnel_if_1_ip }}"
           mtu: "1427"
-          zone_name: "{{ vpn_zone_name }}"
+          vpn_zone_name: "{{ vpn_zone_name }}"
           vr_name: "{{ vr_name }}"
         - if_name: "{{ tunnel_if_2 }}"
           ip: "{{ parsed.aws_vpn[0].tunnel_if_2_ip }}"
           mtu: "1427"
-          zone_name: "{{ vpn_zone_name }}"
+          vpn_zone_name: "{{ vpn_zone_name }}"
           vr_name: "{{ vr_name }}"
 
     - name: Create IPsec tunnels
