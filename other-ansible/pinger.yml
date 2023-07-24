@@ -8,6 +8,10 @@
     - name: Pre-flight check
       ansible.builtin.ping:
 
-    - name: Ping across VPN to AWS
+    - name: Ping across VPN to AWS - shell
       ansible.builtin.command: ping -c 1 172.31.100.158
       ignore_errors: true
+
+    - name: Ping across VPN to AWS - net_ping
+      ansible.netcommon.net_ping:
+        dest: 172.31.100.158
