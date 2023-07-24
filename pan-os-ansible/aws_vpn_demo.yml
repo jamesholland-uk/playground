@@ -82,12 +82,14 @@
 
     - name: Gather info for VPC route table
       amazon.aws.ec2_vpc_route_table_info:
+        region: "{{ region }}"
         filters:
           vpc-id: "{{ vpc_id }}"
       register: the_routetables
 
     - name: Add propagation for VPN VGW to route table
       amazon.aws.ec2_vpc_route_table:
+        region: "{{ region }}"
         vpc_id: "{{ vpc_id }}"
         lookup: id
         route_table_id: "{{ the_routetables.route_tables[0].id }}"
