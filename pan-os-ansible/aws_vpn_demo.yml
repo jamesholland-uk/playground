@@ -93,7 +93,7 @@
         vpc_id: "{{ vpc_id }}"
         lookup: id
         route_table_id: "{{ the_routetables.route_tables[0].id }}"
-        propagating_vgw_ids: "{{ vgw_id }}"
+        propagating_vgw_ids: "{{ created_vgw.vgw.id }}"
       register: the_rt
 
     - name: Get AWS VPN connection details
