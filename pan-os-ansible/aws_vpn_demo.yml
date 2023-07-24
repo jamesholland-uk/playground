@@ -94,6 +94,10 @@
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml(path_to_spec) }}"
 
+    - name: Check parsed VPN facts
+      ansible.builtin.debug:
+        var: parsed
+
     - name: Create IKE crypto profiles
       paloaltonetworks.panos.panos_ike_crypto_profile:
         provider: "{{ device }}"
