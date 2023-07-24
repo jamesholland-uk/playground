@@ -4,30 +4,13 @@
   connection: local
 
   vars:
+    # PAN-OS Management Connectivity
     device:
       ip_address: "{{ ip_address }}"
-      username: "{{ username | default(omit) }}"
-      password: "{{ password | default(omit) }}"
       api_key: "{{ api_key | default(omit) }}"
 
+    # Spec for Parsing AWS VPN Settings
     path_to_spec: "{{ playbook_dir + '/aws_vpn_spec.yml' }}"
-
-    template: "lab-vm-series"
-    template_stack: "lab-vm-series-stack"
-    untrust_interface: "ethernet1/1"
-    trust_interface: "ethernet1/2"
-    tunnel_if_1: "tunnel.10"
-    tunnel_if_2: "tunnel.11"
-    zone_name: "vpn"
-    internal_zone_name: "local"
-    vr_name: "default"
-    local_as: "65000"
-    router_id: "10.0.0.10"
-    peer_group: "AmazonBGP"
-    redist_profile: "Export_to_Amazon"
-    redist_priority: 2
-
-    vpn_id: "vpn-0ea446d8b0d2a2974"
 
     # AWS VPN default settings
     ike_settings:
@@ -42,18 +25,65 @@
       dhgroup: "group2"
       lifetime_seconds: "28800"
 
+
+    # template: "lab-vm-series"
+    # template_stack: "lab-vm-series-stack"
+    ##external_interface: "ethernet1/1"
+    ##inside_interface: "ethernet1/2"
+    ##tunnel_if_1: "tunnel.10"
+    ##tunnel_if_2: "tunnel.11"
+    ##vpn_zone_name: "vpn"
+    ##inside_zone_name: "local"
+    ##vr_name: "default"
+    ##bgp_as: "65000"
+    ##router_id: "10.0.0.10"
+    ##peer_group: "AmazonBGP"
+    ##redist_profile: "Export_to_Amazon"
+    ##bgp_redist_priority: 2
+
+    ##vpn_id: "vpn-0ea446d8b0d2a2974"
+
+    #######
+    # vpc_id: "vpc-64e9520f"
+    ##vpc_id: "vpc-04297b5780fc53709"
+    ##project_name: "prepcheck"
+    ##cpe_ip_address: "34.89.0.242"
+    ##region: "us-east-2"
+    #######
+
   tasks:
     - name: Check if PAN-OS is ready
       paloaltonetworks.panos.panos_check:
         provider: "{{ device }}"
 
-    - name: Get AWS VPN connection info
+    - name: Create AWS Virtual Gateway
+      community.aws.ec2_vpc_vgw:
+        vpc_id: "{{ vpc_id }}"
+        name: "{{ project_name }}_vgw"
+      register: created_vgw
+
+    - name: Create AWS Customer Gateway
+      community.aws.ec2_customer_gateway:
+        name: "{{ project_name }}_cgw"
+        bgp_asn: "{{ bgp_as }}"
+        ip_address: "{{ cpe_ip_address }}"
+      register: created_cgw
+
+    - name: Create AWS VPN connection
+      community.aws.ec2_vpc_vpn:
+        vpn_gateway_id: "{{ created_vgw.vgw.id }}"
+        customer_gateway_id: "{{ created_cgw.gateway.customer_gateway.customer_gateway_id }}"
+        tags:
+          Name: "{{ project_name }}_vpn"
+      register: created_vpn
+
+    - name: Get AWS VPN connection details
       community.aws.ec2_vpc_vpn_info:
         region: "{{ region }}"
-        vpn_connection_ids: "{{ vpn_id }}"
+        vpn_connection_ids: "{{ created_vpn.vpn_connection_id }}"
       register: vpn_conn_facts
 
-    - name: Parse AWS VPN connection info
+    - name: Parse AWS VPN connection details
       ansible.builtin.set_fact:
         parsed: "{{ vpn_conn_facts.vpn_connections[0].customer_gateway_configuration | ansible.netcommon.parse_xml(path_to_spec) }}"
 
@@ -77,7 +107,7 @@
         # template: "{{ template }}"
         name: "{{ item.name }}"
         protocol_version: "ikev1"
-        interface: "{{ untrust_interface }}"
+        interface: "{{ external_interface }}"
         dead_peer_detection: true
         dead_peer_detection_interval: "10"
         dead_peer_detection_retry: "3"
@@ -119,19 +149,19 @@
         if_name: "{{ item.if_name }}"
         ip: "{{ item.ip }}/30"
         mtu: "{{ item.mtu }}"
-        zone_name: "{{ item.zone_name }}"
+        vpn_zone_name: "{{ item.vpn_zone_name }}"
         vr_name: "{{ item.vr_name }}"
         commit: false
       with_items:
         - if_name: "{{ tunnel_if_1 }}"
           ip: "{{ parsed.aws_vpn[0].tunnel_if_1_ip }}"
           mtu: "1427"
-          zone_name: "{{ zone_name }}"
+          vpn_zone_name: "{{ vpn_zone_name }}"
           vr_name: "{{ vr_name }}"
         - if_name: "{{ tunnel_if_2 }}"
           ip: "{{ parsed.aws_vpn[0].tunnel_if_2_ip }}"
           mtu: "1427"
-          zone_name: "{{ zone_name }}"
+          vpn_zone_name: "{{ vpn_zone_name }}"
           vr_name: "{{ vr_name }}"
 
     - name: Create IPsec tunnels
@@ -163,7 +193,7 @@
         provider: "{{ device }}"
         # template: "{{ template }}"
         vr_name: "{{ vr_name }}"
-        local_as: "{{ local_as }}"
+        local_as: "{{ bgp_as }}"
         router_id: "{{ router_id }}"
         install_route: true
         commit: false
@@ -172,7 +202,7 @@
       paloaltonetworks.panos.panos_bgp_peer_group:
         provider: "{{ device }}"
         # template: "{{ template }}"
-        name: "{{ peer_group }}"
+        name: "{{ project_name }}_peergroup"
         vr_name: "{{ vr_name }}"
         commit: false
 
@@ -180,7 +210,7 @@
       paloaltonetworks.panos.panos_bgp_peer:
         provider: "{{ device }}"
         # template: "{{ template }}"
-        peer_group: "{{ peer_group }}"
+        peer_group: "{{ project_name }}_peergroup"
         name: "{{ item.name }}"
         local_interface: "{{ item.local_interface }}"
         local_interface_ip: "{{ item.local_interface_ip }}/30"
@@ -203,11 +233,11 @@
       paloaltonetworks.panos.panos_redistribution:
         provider: "{{ device }}"
         # template: "{{ template }}"
-        name: "{{ redist_profile }}"
+        name: "{{ project_name }}_redist_profile"
         priority: "{{ redist_priority }}"
         vr_name: "{{ vr_name }}"
         filter_type: "connect"
-        filter_interface: "{{ trust_interface }}"
+        filter_interface: "{{ inside_interface }}"
         action: "redist"
         commit: false
 
@@ -215,7 +245,7 @@
       paloaltonetworks.panos.panos_bgp_redistribute:
         provider: "{{ device }}"
         # template: "{{ template }}"
-        name: "{{ redist_profile }}"
+        name: "{{ project_name }}_redist_profile"
         vr_name: "{{ vr_name }}"
         commit: false
 
@@ -223,16 +253,15 @@
       paloaltonetworks.panos.panos_security_rule:
         provider: "{{ device }}"
         rule_name: "Access to AWS"
-        source_zone: ["{{ internal_zone_name }}"]
-        destination_zone: ["{{ zone_name }}"]
+        source_zone: ["{{ inside_zone_name }}"]
+        destination_zone: ["{{ vpn_zone_name }}"]
         source_ip: ["any"]
         destination_ip: ["any"]
         application: ["ping", "ssh"]
         service: "application-default"
         action: "allow"
-        #
-        # ADD LOGS
-        #
+        log_start: true
+        log_end: true
 
     # - name: Commit configuration
     #   paloaltonetworks.panos.panos_commit_panorama:
