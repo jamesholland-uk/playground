@@ -1,7 +1,6 @@
 ---
 - name: Playbook
   hosts: '{{ target | default("all") }}'
-  connection: local
   gather_facts: false
 
   tasks:
@@ -9,9 +8,5 @@
       ansible.builtin.ping:
 
     - name: Ping across VPN to AWS - shell
-      ansible.builtin.command: ping -c 1 172.31.100.158
+      ansible.builtin.command: ping 172.31.100.158
       ignore_errors: true
-
-    - name: Ping across VPN to AWS - net_ping
-      ansible.netcommon.net_ping:
-        dest: 172.31.100.158
