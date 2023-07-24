@@ -248,7 +248,7 @@
       paloaltonetworks.panos.panos_redistribution:
         provider: "{{ device }}"
         # template: "{{ template }}"
-        name: "{{ project_name }}_redist_profile"
+        name: "{{ project_name }}"
         priority: "{{ bgp_redist_priority }}"
         vr_name: "{{ vr_name }}"
         filter_type: "connect"
@@ -260,7 +260,7 @@
       paloaltonetworks.panos.panos_bgp_redistribute:
         provider: "{{ device }}"
         # template: "{{ template }}"
-        name: "{{ project_name }}_redist_profile"
+        name: "{{ project_name }}"
         vr_name: "{{ vr_name }}"
         commit: false
 
