@@ -1,6 +1,6 @@
 ---
 - name: Export ops-related files
-  hosts: '{{ target | default("firewall") }}'
+  hosts: '{{ target | default("host_vm-series-a") }}'
   connection: local
 
   vars:
@@ -16,6 +16,12 @@
         provider: "{{ device }}"
         category: "stats-dump"
         filename: "statsdump.tar.gz"
+
+    - name: Download running configuration file
+      paloaltonetworks.panos.panos_export:
+        provider: "{{ device }}"
+        category: configuration
+        filename: running-config.xml
 
     - name: Download Device State file
       paloaltonetworks.panos.panos_export:
