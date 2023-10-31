@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/jamesholland-uk/playground/compare/v1.3.0...v1.4.0) (2023-10-31)
+
+
+### Features
+
+* Add config export ([59f1821](https://github.com/jamesholland-uk/playground/commit/59f1821ec0e12228da51115b55e6167465263abd))
+
 ## [1.3.0](https://github.com/jamesholland-uk/playground/compare/v1.2.0...v1.3.0) (2023-04-27)
 
 
