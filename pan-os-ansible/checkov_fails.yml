@@ -1,0 +1,45 @@
+---
+- name: Palo Alto Networks Playbook
+  hosts: '{{ target | default("host_labfw") }}'
+  connection: local
+  gather_facts: false
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "so£975nap9e7p34$mnuga9wp3"
+      api_key: "{{ api_key | default(omit) }}"
+
+  tasks:
+    - name: Interface_mgmt_profile_fail
+      paloaltonetworks.panos.panos_management_profile:
+        provider: '{{ device }}'
+        name: 'Test profile'
+        ping: true
+        telnet: true # telnet defined as true, which is a fail
+        ssh: true
+
+    - name: Zone_fail
+      paloaltonetworks.panos.panos_zone:
+        provider: '{{ device }}'
+        zone: 'dmz'
+        mode: 'layer3'
+        zone_profile: 'strict'
+        enable_userid: true # No inside ACL when User-ID is defined as true
+
+
+    - name: Security_rule_fail
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ provider }}'
+        rule_name: 'Test rule'
+        source_zone: ['any']
+        destination_zone: ['any']
+        source_ip: ['any']
+        destination_ip: ['any'] # Source and destination IP are 'any'
+        category: ['any']
+        application: ['ssl']
+        service: ['service-http', 'service-https']
+        description: "A nice rule"
+        action: 'allow'
+        log_setting: 'default'
