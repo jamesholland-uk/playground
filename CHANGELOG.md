@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/jamesholland-uk/playground/compare/v1.4.0...v1.5.0) (2023-11-22)
+
+
+### Features
+
+* Intentional PAN-OS fails for Checkov ([50670ec](https://github.com/jamesholland-uk/playground/commit/50670ec58cdd2ed015273c401873280dc4e1458d))
+
 ## [1.4.0](https://github.com/jamesholland-uk/playground/compare/v1.3.0...v1.4.0) (2023-10-31)
 
 
