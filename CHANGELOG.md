@@ -1,3 +1,10 @@
+## [1.6.0](https://github.com/jamesholland-uk/playground/compare/v1.5.0...v1.6.0) (2023-11-30)
+
+
+### Features
+
+* Cloud mgmt with Python ([c715b0b](https://github.com/jamesholland-uk/playground/commit/c715b0b8e30290d25473e76ca28075fcf696ee0f))
+
 ## [1.5.0](https://github.com/jamesholland-uk/playground/compare/v1.4.0...v1.5.0) (2023-11-22)
 
 
