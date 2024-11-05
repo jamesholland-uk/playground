@@ -56,3 +56,4 @@ br-bh.xdr.us.paloaltonetworks.com,Cortex XSIAM
 distributions.traps.paloaltonetworks.com,Cortex XSIAM
 crl.paloaltonetworks.com,CRLs
 ocsp.paloaltonetworks.com,CRLs
+test.com,test
