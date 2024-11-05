@@ -1,0 +1,58 @@
+FQDN,Notes
+updates.paloaltonetworks.com,Palo Alto Networks Updates Server
+proditpdownloads.paloaltonetworks.com,Palo Alto Networks Updates Server
+serverlist.urlcloud.paloaltonetworks.com,URL Filtering Updates
+serverlist2.urlcloud.paloaltonetworks.com,URL Filtering Updates
+serverlist3.urlcloud.paloaltonetworks.com,URL Filtering Updates
+s0000.urlcloud.paloaltonetworks.com,URL Filtering Updates
+s0100.urlcloud.paloaltonetworks.com,URL Filtering Updates
+s0200.urlcloud.paloaltonetworks.com,URL Filtering Updates
+s0300.urlcloud.paloaltonetworks.com,URL Filtering Updates
+s0500.urlcloud.paloaltonetworks.com,URL Filtering Updates
+us.hawkeye.services-edge.paloaltonetworks.com,Threat Prevention Updates
+uk.hawkeye.services-edge.paloaltonetworks.com,Threat Prevention Updates
+eu.hawkeye.services-edge.paloaltonetworks.com,Threat Prevention Updates
+apac.hawkeye.services-edge.paloaltonetworks.com,Threat Prevention Updates
+ace.hawkeye.services-edge.paloaltonetworks.com,App-ID Updates
+urlcat.hawkeye.services-edge.paloaltonetworks.com,URL Filtering Updates
+dns.service.paloaltonetworks.com,DNS Security Updates
+io.dns.service.paloaltonetworks.com,DNS Security Updates
+static.dns.service.paloaltonetworks.com,DNS Security Updates
+data.threatvault.paloaltonetworks.com,Threat Prevention Updates
+kcs.ace.tpcloud.paloaltonetworks.com,App-ID Updates
+ml.service.paloaltonetworks.com,Threat Prevention Updates
+ml-static.service.paloaltonetworks.com,Threat Prevention Updates
+iot.services-edge.paloaltonetworks.com,IoT Security Updates
+enforcer.iot.services-edge.paloaltonetworks.com,IoT Security Updates
+wildfire.paloaltonetworks.com,WildFire Updates
+realtimesignatures.service.paloaltonetworks.com,WildFire Updates
+license.api.paloaltonetworks.com,Licence Server
+api.lc.prod.us.cs.paloaltonetworks.com,Cloud Services 
+lic.lc.prod.us.cs.paloaltonetworks.com,Cloud Services 
+lic-prodx.api.paloaltonetworks.com,Cloud Services 
+certificate.paloaltonetworks.com,Certificates
+app-registry-service.apps.paloaltonetworks.com,App-ID Updates
+fei-prd1.us2.cent1.cdl.paloaltonetworks.com,Cloud Services 
+br-prd1.us.cdl.paloaltonetworks.com,Cloud Services 
+firewall-prd1.us.cdl.paloaltonetworks.com,Cloud Services 
+firewall-prd1.us2.cent1.cdl.paloaltonetworks.com,Cloud Services 
+fei-prd1.us.cdl.paloaltonetworks.com,Cloud Services 
+eal-prd1.us2.cent1.cdl.paloaltonetworks.com,Cloud Services 
+pcl-prd1.us.cdl.paloaltonetworks.com,Cloud Services 
+cortex-prd1.us.cdl.paloaltonetworks.com,Cloud Services 
+cdl-gov1.us1.cent1.gov.cdl.paloaltonetworks.com,Cloud Services 
+314593f4-b521-4e98-9462-816acc943009.in2-lc-prod-us.gpcloudservice.com,Cloud Services 
+314593f4-b521-4e98-9462-816acc943009.fei-lc-prod-us.gpcloudservice.com,Cloud Services 
+314593f4-b521-4e98-9462-816acc943009.api2-lc-prod-us.gpcloudservice.com,Cloud Services 
+api.paloaltonetworks.com,Cloud Services 
+apitrusted.paloaltonetworks.com,Cloud Services 
+certificatetrusted.paloaltonetworks.com,Certificates
+do.paloaltonetworks.com,Cloud Services 
+api.threatvault.paloaltonetworks.com,Threat Prevention Updates
+api-eu.threatvault.paloaltonetworks.com,Threat Prevention Updates
+api-us.threatvault.paloaltonetworks.com,Threat Prevention Updates
+api-asia.threatvault.paloaltonetworks.com,Threat Prevention Updates
+br-bh.xdr.us.paloaltonetworks.com,Cortex XSIAM
+distributions.traps.paloaltonetworks.com,Cortex XSIAM
+crl.paloaltonetworks.com,CRLs
+ocsp.paloaltonetworks.com,CRLs
