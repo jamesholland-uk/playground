@@ -1,0 +1,9 @@
+Can you validate the figures for my 2022-2023 UK self assessment "tax return".
+
+UTR: 3234567890
+Gross income: £46,103
+Interest from savings: £840
+Minus personal allowance: £11850
+Income tax due: £18,103
+Income tax paid: £17,103
+Payment due: £1,000
