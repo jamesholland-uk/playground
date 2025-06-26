@@ -1,0 +1,33 @@
+---
+- name: Test Playbook
+  hosts: '{{ target | default("host_labfw") }}'
+  gather_facts: false
+  connection: local
+
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+
+  tasks:
+    - name: Get API key
+      paloaltonetworks.panos.panos_api_key:
+        provider: '{{ device }}'
+      register: auth
+
+    - name: Set API key for future task usage
+      ansible.builtin.set_fact:
+        device:
+          api_key: '{{ auth.api_key }}'
+          ip_address: '{{ ip_address }}'
+
+    - name: Get the system info
+      paloaltonetworks.panos.panos_op:
+        provider: '{{ device }}'
+        cmd: 'show system info'
+      register: res
+
+    - name: Show the system info
+      ansible.builtin.debug:
+        msg: '{{ res.stdout }}'
