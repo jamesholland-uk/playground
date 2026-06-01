@@ -2,5 +2,8 @@
 # Python for 'connection: local' module calls.
 #
 # See http://willthames.github.io/2018/07/01/connection-local-vs-delegate_to-localhost.html.
-ansible_python_interpreter: "{{ ansible_playbook_python }}"
+# ansible_python_interpreter: "{{ ansible_playbook_python }}"
 # ansible_python_interpreter: '/usr/bin/python'
+
+# Changed to point to venv
+ansible_python_interpreter: "{{ playbook_dir }}/.venv/bin/python"
