@@ -16,8 +16,8 @@
         provider: "{{ device }}"
         gathered_filter: "*"
         state: gathered
-      register: tags
+      register: tag_objects
 
     - name: Output
       ansible.builtin.debug:
-        msg: "{{ tags }}"
+        msg: "{{ tag_objects }}"

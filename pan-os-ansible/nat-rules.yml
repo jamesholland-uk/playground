@@ -31,7 +31,7 @@
 
     # Old NAT module
     - name: Create static NAT rule
-      paloaltonetworks.panos.panos_nat_rule:
+      paloaltonetworks.panos.panos_nat_rule2:
         provider: "{{ device }}"
         rule_name: "nat rule"
         description: "new NAT"

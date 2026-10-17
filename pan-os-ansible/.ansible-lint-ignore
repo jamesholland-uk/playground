@@ -1,2 +1,6 @@
 # This file contains ignores rule violations for ansible-lint
 aws_vpn.yml jinja[invalid]
+panorama_mgd_devices.yml empty-string-compare
+get-rules.yml fqcn[canonical]
+panos_facts_more.yml fqcn[canonical]
+panos_list_rules_with_profiles.yml fqcn[canonical]
