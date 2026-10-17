@@ -57,7 +57,7 @@
         provider: "{{ device }}"
 
     - name: Create AWS Virtual Gateway
-      community.aws.ec2_vpc_vgw:
+      amazon.aws.ec2_vpc_vgw:
         region: "{{ region }}"
         vpc_id: "{{ vpc_id }}"
         name: "{{ project_name }}_vgw"
@@ -72,7 +72,7 @@
       register: created_cgw
 
     - name: Create AWS VPN connection
-      community.aws.ec2_vpc_vpn:
+      amazon.aws.ec2_vpc_vpn:
         region: "{{ region }}"
         vpn_gateway_id: "{{ created_vgw.vgw.id }}"
         customer_gateway_id: "{{ created_cgw.gateway.customer_gateway.customer_gateway_id }}"
@@ -97,7 +97,7 @@
       register: the_rt
 
     - name: Get AWS VPN connection details
-      community.aws.ec2_vpc_vpn_info:
+      amazon.aws.ec2_vpc_vpn_info:
         region: "{{ region }}"
         vpn_connection_ids: "{{ created_vpn.vpn_connection_id }}"
       register: vpn_conn_facts

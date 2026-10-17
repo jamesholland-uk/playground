@@ -3,3 +3,4 @@ collections:
   - paloaltonetworks.panos
   - community.general
   - community.aws
+  - amazon.aws

@@ -115,7 +115,7 @@
           - "{{ ansible_facts['net_session_usage'] }} out of {{ ansible_facts['net_session_max'] }} sessions in use"
 
     - name: Get VPN connection info
-      community.aws.ec2_vpc_vpn_info:
+      amazon.aws.ec2_vpc_vpn_info:
         region: "{{ region }}"
         vpn_connection_ids: "{{ vpn_id }}"
       register: vpn_conn_facts
