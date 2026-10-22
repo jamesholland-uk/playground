@@ -7,7 +7,7 @@ pan-python = "==0.16.0"
 python-dateutil = "==2.9.0.post0"
 s3transfer = "==0.19.2"
 six = "==1.17.0"
-urllib3 = "==1.26.20"
+urllib3 = "==2.8.0"
 xmltodict = "==0.15.1"
 
 [dev-packages]
