@@ -8,6 +8,6 @@ python-dateutil = "==2.9.0.post0"
 s3transfer = "==0.19.2"
 six = "==1.17.0"
 urllib3 = "==2.8.0"
-xmltodict = "==0.15.1"
+xmltodict = "==1.0.4"
 
 [dev-packages]
