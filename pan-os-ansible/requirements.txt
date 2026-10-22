@@ -13,6 +13,6 @@ requests
 requests_toolbelt
 ansible-lint
 ansible-navigator
-jsonschema==3.2.0
+jsonschema==4.26.0
 lxml
 netaddr
