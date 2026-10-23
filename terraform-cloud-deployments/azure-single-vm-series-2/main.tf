@@ -17,7 +17,7 @@ resource "random_password" "this" {
 # Virtual Network and its Network Security Group
 module "vnet" {
   source  = "PaloAltoNetworks/vmseries-modules/azurerm//modules/vnet"
-  version = "0.2.0"
+  version = "1.2.4"
 
   virtual_network_name    = "vnet-vmseries"
   location                = var.location
@@ -44,7 +44,7 @@ module "vnet" {
 # The VM-Series bootstrap
 module "bootstrap" {
   source  = "PaloAltoNetworks/vmseries-modules/azurerm//modules/bootstrap"
-  version = "0.2.0"
+  version = "1.2.4"
 
   resource_group_name  = azurerm_resource_group.this.name
   location             = azurerm_resource_group.this.location
@@ -55,7 +55,7 @@ module "bootstrap" {
 # The VM-Series virtual machine
 module "vmseries" {
   source  = "PaloAltoNetworks/vmseries-modules/azurerm//modules/vmseries"
-  version = "0.2.0"
+  version = "1.2.4"
 
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
