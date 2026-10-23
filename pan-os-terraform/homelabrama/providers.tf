@@ -2,7 +2,7 @@ terraform {
   required_providers {
     panos = {
       source  = "paloaltonetworks/panos"
-      version = "1.11.1"
+      version = "2.0.14"
     }
     aws = {
       source  = "hashicorp/aws"
