@@ -1,6 +1,6 @@
 [packages]
-boto3 = "==1.43.115"
-botocore = "==1.43.115"
+boto3 = "==1.43.116"
+botocore = "==1.43.116"
 jmespath = "==1.1.0"
 pan-os-python = "==1.13.1"
 pan-python = "==0.17.0"
