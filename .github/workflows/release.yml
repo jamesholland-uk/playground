@@ -23,7 +23,7 @@ jobs:
       #   run: npx semantic-release
       - name: Create release
         # id: release
-        uses: cycjimmy/semantic-release-action@v6.0.0
+        uses: cycjimmy/semantic-release-action@v7.1.2
         with:
           semantic_version: 25.0.9
           extra_plugins: |
