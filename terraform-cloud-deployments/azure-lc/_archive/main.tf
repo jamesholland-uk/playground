@@ -1,6 +1,6 @@
 module "panorama" {
   source  = "PaloAltoNetworks/vmseries-modules/azurerm//modules/panorama"
-  version = "0.2.0"
+  version = "0.5.5"
 
   panorama_name       = var.panorama_name
   resource_group_name = var.resource_group_name
